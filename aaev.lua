@@ -8,6 +8,7 @@ playersettings = require "aaev_settings"
 
 require "libraries/recording"
 require "libraries/chart"
+require "libraries/background"
 require "libraries/bars"
 require "libraries/labels"
 require "libraries/int_to_binary"
