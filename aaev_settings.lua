@@ -22,9 +22,10 @@ local settings = {}
 	-- Can set to colors found in "colors.lua" or defined as {r, g, b} values
 	-- eg: ColorHit = {255, 0, 255} to make ColorHit = purple
 	settings.ColorHit = Blue
-	settings.ColorMiss = White
-	settings.ColorHitZero = Grey2
 	settings.ColorCrit = BluePale
+	settings.ColorMiss = White
+	settings.ColorBlock = Grey3
+	settings.ColorHitZero = Grey2
 
 	-- Controls the display of the max damage text value
 	settings.DisplayMax = true
