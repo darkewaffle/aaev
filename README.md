@@ -1,6 +1,6 @@
-#Auto Attacks Easily Visualized
+# Auto Attacks Easily Visualized
 
-##How To
+## How To
 1. Download aaev.lua, aaev_settings.lua and the libraries folder.
 2. Place them in Windower\addons\aaev.
 3. Modify aaev_settings.lua to your liking.
