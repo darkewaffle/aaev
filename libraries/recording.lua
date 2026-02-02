@@ -5,6 +5,7 @@ LogResetPending = false
 ATTACK_HIT = "hit"
 ATTACK_CRIT= "crit"
 ATTACK_MISS = "miss"
+ATTACK_BLOCK = "block"
 ATTACK_HIT_ZERO = "zero"
 
 function RecordAttackData(AttackPacket)
@@ -28,6 +29,8 @@ function RecordAttackData(AttackPacket)
 		if AttackMessage == 15 or AttackMessage == 63 then
 			AttackResult = ATTACK_MISS
 			AttackLog[ActionTarget][ATTACK_MISS] = AttackLog[ActionTarget][ATTACK_MISS] + 1
+		elseif AttackMessage == 69 then
+			AttackResult = ATTACK_BLOCK
 		elseif AttackDamage == 0 then
 			AttackResult = ATTACK_HIT_ZERO
 		elseif AttackMessage == 67 then

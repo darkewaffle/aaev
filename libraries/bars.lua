@@ -1,10 +1,11 @@
 local BarsAlpha = playersettings.BarsAlpha or 255
 local BarWidth = ChartWidth / ChartBars
 
-local ColorHit = playersettings.ColorHit or RedPale
+local ColorHit = playersettings.ColorHit or Blue
+local ColorCrit = playersettings.ColorCrit or BluePale
 local ColorMiss = playersettings.ColorMiss or White
+local ColorBlock = playersettings.ColorBlock or Grey3
 local ColorHitZero = playersettings.ColorHitZero or Grey2
-local ColorCrit = playersettings.ColorCrit or Red
 
 local BarNameRoot = "AAEV_Bar"
 
@@ -65,13 +66,17 @@ function SetBarStyle(BarName, AttackResult, DamageHeight)
 			windower.prim.set_size(BarName, BarWidth, DamageHeight)
 			SetBarColor(BarName, ColorCrit)
 
-		elseif AttackResult == ATTACK_HIT_ZERO then
-			windower.prim.set_size(BarName, BarWidth, BarWidth)
-			SetBarColor(BarName, ColorHitZero)
-
 		elseif AttackResult == ATTACK_MISS then
 			windower.prim.set_size(BarName, BarWidth, BarWidth)
 			SetBarColor(BarName, ColorMiss)
+
+		elseif AttackResult == ATTACK_BLOCK then
+			windower.prim.set_size(BarName, BarWidth, DamageHeight)
+			SetBarColor(BarName, ColorBlock)
+
+		elseif AttackResult == ATTACK_HIT_ZERO then
+			windower.prim.set_size(BarName, BarWidth, BarWidth)
+			SetBarColor(BarName, ColorHitZero)
 		end
 
 	elseif DisplayMode == "simple" then
@@ -80,13 +85,17 @@ function SetBarStyle(BarName, AttackResult, DamageHeight)
 			windower.prim.set_size(BarName, BarWidth, BarWidth)
 			SetBarColor(BarName, ColorHit)
 
-		elseif AttackResult == ATTACK_HIT_ZERO then
-			windower.prim.set_size(BarName, BarWidth, BarWidth)
-			SetBarColor(BarName, ColorHitZero)
-
 		elseif AttackResult == ATTACK_MISS then
 			windower.prim.set_size(BarName, BarWidth, BarWidth)
 			SetBarColor(BarName, ColorMiss)
+
+		elseif AttackResult == ATTACK_BLOCK then
+			windower.prim.set_size(BarName, BarWidth, BarWidth)
+			SetBarColor(BarName, ColorBlock)
+
+		elseif AttackResult == ATTACK_HIT_ZERO then
+			windower.prim.set_size(BarName, BarWidth, BarWidth)
+			SetBarColor(BarName, ColorHitZero)
 		end
 
 	end
