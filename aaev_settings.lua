@@ -37,7 +37,8 @@ local settings = {}
 	-- Controls the background color
 	settings.BGColor = Black
 	-- Controls the space between the bounds of the chart data and the edge of the background
-	settings.BGPadding = 3
+	settings.BGPaddingX = 5
+	settings.BGPaddingY = 25
 	-- Transparency for the backcround
 	-- 0 is completely transparent (not visible), 255 is completely opaque
 	settings.BGAlpha = 128
