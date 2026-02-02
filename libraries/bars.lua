@@ -6,9 +6,11 @@ local ColorMiss = playersettings.ColorMiss or White
 local ColorHitZero = playersettings.ColorHitZero or Grey2
 local ColorCrit = playersettings.ColorCrit or Red
 
+local BarNameRoot = "AAEV_Bar"
+
 function CreateBars(Visible)
 	for i = 1, ChartBars do
-		local BarName = "ChartBar" .. i
+		local BarName = BarNameRoot .. i
 		windower.prim.create(BarName)
 		windower.prim.set_position(BarName, ChartStartX + (BarWidth * (i-1)), ChartStartY)
 		windower.prim.set_size(BarName, BarWidth, ChartHeight * -1)
@@ -21,7 +23,7 @@ function UpdateBars(TargetID)
 	local MaxDamage = AttackLog[TargetID]["max"]
 
 	for i = 1, ChartBars do
-		local BarName = "ChartBar" .. i
+		local BarName = BarNameRoot .. i
 
 		if AttackLog[TargetID][i] then
 			local AttackDamage = AttackLog[TargetID][i]["damage"]
@@ -43,7 +45,7 @@ end
 
 function DisplayBars(Visible)
 	for i = 1, ChartBars do
-		local BarName = "ChartBar" .. i
+		local BarName = BarNameRoot .. i
 		windower.prim.set_visibility(BarName, Visible)
 	end
 end
