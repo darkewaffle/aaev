@@ -1,24 +1,24 @@
-local DisplayMax = playersettings.DisplayMax
-if DisplayMax == nil then
-	DisplayMax = true
+local EnableMaxLabel = playersettings.DisplayMax
+if EnableMaxLabel == nil then
+	EnableMaxLabel = true
 end
 
-local DisplayHitRate = playersettings.DisplayHitRate
-if DisplayHitRate == nil then
-	DisplayHitRate = true
+local EnableHitRate = playersettings.DisplayHitRate
+if EnableHitRate == nil then
+	EnableHitRate = true
 end
 
 function CreateLabels(Visible)
 	local LabelSettings = GetLabelSettings()
 
-	if DisplayMax then
+	if EnableMaxLabel then
 		LabelSettings.pos.x = ChartStartX
 		LabelSettings.pos.y = ChartStartY - ChartHeight - 25
 		MaxLabel = texts.new("Max", LabelSettings)
 		MaxLabel:visible(Visible)
 	end
 
-	if DisplayHitRate then
+	if EnableHitRate then
 		LabelSettings.pos.x = ChartStartX
 		LabelSettings.pos.y = ChartStartY + 5
 		HitRateLabel = texts.new("HitRate", LabelSettings)
@@ -27,7 +27,7 @@ function CreateLabels(Visible)
 end
 
 function UpdateLabels(TargetID)
-	if DisplayMax then
+	if EnableMaxLabel then
 		local MaxDamage = AttackLog[TargetID]["max"]
 		local MaxDamageString = "0"
 
@@ -45,7 +45,7 @@ function UpdateLabels(TargetID)
 		MaxLabel:text("Max: " .. MaxDamageString)
 	end
 
-	if DisplayHitRate then
+	if EnableHitRate then
 		local HitRate = (AttackLog[TargetID]["count"] - AttackLog[TargetID][ATTACK_MISS]) / AttackLog[TargetID]["count"] * 100
 		local HitRateString = string.format("%.1f", HitRate)
 		HitRateLabel:visible(true)
@@ -54,11 +54,11 @@ function UpdateLabels(TargetID)
 end
 
 function DisplayLabels(Visible)
-	if DisplayMax then
+	if EnableMaxLabel then
 		MaxLabel:visible(Visible)
 	end
 
-	if DisplayHitRate then
+	if EnableHitRate then
 		HitRateLabel:visible(Visible)
 	end
 end
