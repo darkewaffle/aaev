@@ -31,4 +31,14 @@ local settings = {}
 	-- Controls the display of the hit rate text value
 	settings.DisplayHitRate = true
 
+	-- Controls the display of a background for the chart
+	settings.BGDisplay = true
+	-- Controls the background color
+	settings.BGColor = Black
+	-- Controls the space between the bounds of the chart data and the edge of the background
+	settings.BGPadding = 3
+	-- Transparency for the backcround
+	-- 0 is completely transparent (not visible), 255 is completely opaque
+	settings.BGAlpha = 128
+
 return settings
