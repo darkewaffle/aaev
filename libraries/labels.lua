@@ -8,19 +8,28 @@ if EnableHitRate == nil then
 	EnableHitRate = true
 end
 
+local MaxLabelPrefix = playersettings.MaxLabelPrefix or "Max: "
+local HitRateLabelPrefix = playersettings.HitRateLabelPrefix or "Hit: "
+
+
+local LabelOffsetUp = playersettings.LabelOffsetUp or 25
+local LabelOffsetDown = playersettings.LabelOffsetDown or 5
+local LabelOffsetRight = playersettings.LabelOffsetRight or 0
+
+
 function CreateLabels(Visible)
 	local LabelSettings = GetLabelSettings()
 
 	if EnableMaxLabel then
-		LabelSettings.pos.x = ChartStartX
-		LabelSettings.pos.y = ChartStartY - ChartHeight - 25
+		LabelSettings.pos.x = ChartStartX + LabelOffsetRight
+		LabelSettings.pos.y = ChartStartY - ChartHeight - LabelOffsetUp
 		MaxLabel = texts.new("Max", LabelSettings)
 		MaxLabel:visible(Visible)
 	end
 
 	if EnableHitRate then
-		LabelSettings.pos.x = ChartStartX
-		LabelSettings.pos.y = ChartStartY + 5
+		LabelSettings.pos.x = ChartStartX + LabelOffsetRight
+		LabelSettings.pos.y = ChartStartY + LabelOffsetDown
 		HitRateLabel = texts.new("HitRate", LabelSettings)
 		HitRateLabel:visible(Visible) 
 	end
@@ -42,14 +51,14 @@ function UpdateLabels(TargetID)
 		end
  
 		MaxLabel:visible(true)
-		MaxLabel:text("Max: " .. MaxDamageString)
+		MaxLabel:text(MaxLabelPrefix .. MaxDamageString)
 	end
 
 	if EnableHitRate then
 		local HitRate = (AttackLog[TargetID]["count"] - AttackLog[TargetID][ATTACK_MISS]) / AttackLog[TargetID]["count"] * 100
 		local HitRateString = string.format("%.1f", HitRate)
 		HitRateLabel:visible(true)
-		HitRateLabel:text("Hit: " .. HitRateString .. "%")
+		HitRateLabel:text(HitRateLabelPrefix .. HitRateString .. "%")
 	end
 end
 
@@ -90,18 +99,18 @@ function GetLabelSettings()
 
 	LabelSettings.padding = 0
 
-	LabelSettings.text.size  = 12
-	LabelSettings.text.font  = 'Consolas'
-	LabelSettings.text.alpha = 255
-	LabelSettings.text.red   = 255
-	LabelSettings.text.green = 255
-	LabelSettings.text.blue  = 255
+	LabelSettings.text.size  = playersettings.LabelSize or 12
+	LabelSettings.text.font  = playersettings.LabelFont or 'Consolas'
+	LabelSettings.text.alpha = playersettings.LabelAlpha or 255
+	LabelSettings.text.red   = playersettings.LabelColor[1] or 255
+	LabelSettings.text.green = playersettings.LabelColor[2] or 255
+	LabelSettings.text.blue  = playersettings.LabelColor[3] or 255
 
-	LabelSettings.text.stroke.width = 1
-	LabelSettings.text.stroke.alpha = 255
-	LabelSettings.text.stroke.red   = 0
-	LabelSettings.text.stroke.green = 0
-	LabelSettings.text.stroke.blue  = 0
+	LabelSettings.text.stroke.width = playersettings.LabelHighlightThickness or 1
+	LabelSettings.text.stroke.alpha = playersettings.LabelHighlightAlpha or 255
+	LabelSettings.text.stroke.red   = playersettings.LabelHighlightColor[1] or 0
+	LabelSettings.text.stroke.green = playersettings.LabelHighlightColor[2] or 0
+	LabelSettings.text.stroke.blue  = playersettings.LabelHighlightColor[3] or 0
 
 	return LabelSettings
 end
