@@ -41,28 +41,22 @@ local settings = {}
 
 	-- Controls the display of the max damage text Label
 	settings.DisplayMax = true
-	settings.MaxLabelPrefix = "M "
+	settings.MaxLabelPrefix = "Max: "
 	-- Controls the display of the hit rate text Label
 	settings.DisplayHitRate = true
-	settings.HitRateLabelPrefix = "H "
-
+	settings.HitRateLabelPrefix = "Hit: "
 	-- Controls the font used for Labels
 	settings.LabelFont = 'Consolas'
 	settings.LabelSize = 11
 	settings.LabelAlpha = 255
 	settings.LabelColor = White
-
 	-- Controls the highlight/outline of the Label font
 	settings.LabelHighlightColor = Black
 	settings.LabelHighlightAlpha = 128
 	settings.LabelHighlightThickness = 1
-
 	-- Controls the number of pixels between the Chart and the Labels
 	settings.LabelOffsetUp = 21
 	settings.LabelOffsetDown = 3
 	settings.LabelOffsetRight = 2
-
-
-
 
 return settings
