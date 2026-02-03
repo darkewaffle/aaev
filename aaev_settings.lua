@@ -4,8 +4,8 @@ local settings = {}
 	settings.DisplayMode = "full"
 
 	-- When true the demo dataset and chart will be automatically displayed when the addon is loaded
-	-- Useful to quickly see the results of adjusting your settings
-	settings.AutoDemo = true
+	-- Useful to quickly see the results of adjusting your settings and reload to iterate
+	settings.AutoDemo = false
 
 	-- Maximum number of bars (attacks) that the chart will display
 	-- Recommended to not set this super high as each bar, even if not visible, will be evaluated in every update
