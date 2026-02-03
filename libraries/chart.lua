@@ -25,3 +25,8 @@ function UpdateChart(TargetID)
 		UpdateLabels(TargetID)
 	end
 end
+
+function DemoChart()
+	CreateDemoLog()
+	UpdateChart(1)
+end
