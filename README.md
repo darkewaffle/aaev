@@ -1,8 +1,6 @@
 # Auto Attacks Easily Visualized
 
-
 [Image of an example AAEV Chart](https://i.imgur.com/r6K0wdm.png)
-
 
 ## How To
 1. Download aaev.lua, aaev_settings.lua and the libraries folder. aaev.lua and the libraries folder can be found in the zip file under [Releases](https://github.com/darkewaffle/aaev/releases). You only need to download the settings file if you do not already have one - although it could change over time as new settings are supported.
@@ -11,6 +9,13 @@
 4. "lua l aaev" in game to initialize the addon.
 5. Go melee attack stuff and AAEV will chart the results.
 
+## Commands
+| Command | Usage |
+| --- | --- |
+| aaev full | Toggles the chart mode to 'full' |
+| aaev simple | Toggles the chart mode to 'simple' |
+| aaev show | Force the chart to display |
+| aaev demo | Draw the chart using a sample dataset |
 
 ## Description
 So the idea behind this was I wanted to turn off all my auto attacks in the log but I didn't want to lose the information they provide. Namely am I missing, am I suddenly dealing noticeably less damage, am I dealing zero damage, etc. So essentially this monitors incoming packets for your own auto attacks, records the results and then turns them into a little chart while you're engaged with that enemy. Additionally the colors, size, appearance, number of bars and more can all be easily customized in a single settings file.
