@@ -19,6 +19,11 @@ packets = require "packets"
 local PlayerID = windower.ffxi.get_player()["id"]
 local RegisteredEventIDs = {}
 
+local AutoDemo = playersettings.AutoDemo
+if AutoDemo == nil then
+	AutoDemo = false
+end
+
 function OnLoad()
 	table.insert(RegisteredEventIDs, windower.register_event('unload', OnUnload))
 	table.insert(RegisteredEventIDs, windower.register_event('incoming chunk', OnChunk))
@@ -27,6 +32,10 @@ function OnLoad()
 	table.insert(RegisteredEventIDs, windower.register_event('addon command', OnCommand))
 
 	CreateChart(false)
+
+	if AutoDemo then
+		DemoChart()
+	end
 end
 
 function OnUnload()
@@ -115,6 +124,10 @@ function OnCommand(...)
 
 	if CommandParameters[1] == "full" then
 		DisplayMode = "full"
+	end
+
+	if CommandParameters[1] == "demo" then
+		DemoChart()
 	end
 
 end
