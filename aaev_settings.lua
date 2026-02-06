@@ -3,9 +3,20 @@ local settings = {}
 	-- "full" or "simple"
 	settings.DisplayMode = "full"
 
+	-- When true then any additional effect damage will be added to the base hit damage for the purposes of determining Max damage dealt and size of the bar
+	-- Each hit will be represented as a single bar
+	settings.AdditionalEffectSingleBar = false
+
+	-- When true then additional effect damage will be displayed as a second bar stacked on top of the bar for the physical damage hit
+	-- Each hit that includes an additional effect that deals damage will be displayed as two bars stacked together
+	-- Note that this also effectively doubles the number of bars that the chart is tracking - if you experience performance issues then turning this off or reducing the number of ChartBars may help.
+	-- AdditionalEffectSingleBar and AdditionalEffectStackBars should not be used together. If they are both true then only AdditionalEffectSingleBar will take effect.
+	settings.AdditionalEffectStackBars = false
+
 	-- When true the demo dataset and chart will be automatically displayed when the addon is loaded
 	-- Useful to quickly see the results of adjusting your settings and reload to iterate
 	settings.AutoDemo = false
+
 
 	-- Maximum number of bars (attacks) that the chart will display
 	-- Recommended to not set this super high as each bar, even if not visible, will be evaluated in every update
