@@ -7,11 +7,29 @@ ATTACK_CRIT= "crit"
 ATTACK_MISS = "miss"
 ATTACK_BLOCK = "block"
 ATTACK_HIT_ZERO = "zero"
+ATTACK_ADDITIONAL_EFFECT = "additionaleffect"
+
+AdditionalEffectSingleBar = playersettings.AdditionalEffectSingleBar
+if AdditionalEffectSingleBar == nil then
+	AdditionalEffectSingleBar = false
+end
+
+AdditionalEffectStackBars = playersettings.AdditionalEffectStackBars
+if AdditionalEffectStackBars == nil then
+	AdditionalEffectStackBars = false
+end
 
 function RecordAttackData(AttackPacket)
 	local ActionTarget = AttackPacket["Target 1 ID"]
 	local AttackCount = AttackPacket["Target 1 Action Count"]
 	local AttackPrefix = "Target 1 Action "
+
+	local AdditionalEffectDamageMessages =
+	{
+		[161] = true, -- HP Drain
+		[163] = true, -- Generic damage (?)
+		[229] = true, -- Enspell damage
+	}
 
 	if not AttackLog[ActionTarget] then
 		CreateAttackLog(ActionTarget)
@@ -23,9 +41,11 @@ function RecordAttackData(AttackPacket)
 		local AttackDamage = AttackPacket[AttackName .. " Param"]
 		local AttackResult = "Placeholder"
 
-		AttackLog[ActionTarget]["count"] = AttackLog[ActionTarget]["count"] + 1
-		AttackLog[ActionTarget]["max"] = math.max(AttackLog[ActionTarget]["max"], AttackDamage)
-		
+		local AdditionalEffect = AttackPacket[AttackName .. " Has Added Effect"]
+		local AdditionalEffectMessage = AttackPacket[AttackName .. " Added Effect Message"]
+		local AdditionalEffectDamage = 0
+
+		-- Evaluate results of the attack
 		if AttackMessage == 15 or AttackMessage == 63 then
 			AttackResult = ATTACK_MISS
 			AttackLog[ActionTarget][ATTACK_MISS] = AttackLog[ActionTarget][ATTACK_MISS] + 1
@@ -40,7 +60,23 @@ function RecordAttackData(AttackPacket)
 			AttackResult = ATTACK_HIT
 		end
 
-		table.insert(AttackLog[ActionTarget], {result = AttackResult, damage = AttackDamage})
+		-- Evaluate if an Additional Effect was applied and dealt damage
+		if AdditionalEffect then
+			if AdditionalEffectDamageMessages[AdditionalEffectMessage] then
+				AdditionalEffectDamage = AttackPacket[AttackName .. " Added Effect Param"] or 0
+			end
+		end
+
+		-- If either AE setting is enabled then max damage should reflect hit + AE
+		if AdditionalEffectSingleBar or AdditionalEffectStackBars then
+			AttackLog[ActionTarget]["max"] = math.max(AttackLog[ActionTarget]["max"], AttackDamage + AdditionalEffectDamage)
+		else
+			AttackLog[ActionTarget]["max"] = math.max(AttackLog[ActionTarget]["max"], AttackDamage)
+		end
+
+		-- Update the table with the attack data
+		AttackLog[ActionTarget]["count"] = AttackLog[ActionTarget]["count"] + 1
+		table.insert(AttackLog[ActionTarget], {result = AttackResult, damage = AttackDamage, additionaleffect = AdditionalEffectDamage})
 	end
 end
 
