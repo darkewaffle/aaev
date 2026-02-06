@@ -39,6 +39,7 @@ local settings = {}
 	settings.ColorMiss = White
 	settings.ColorBlock = Grey3
 	settings.ColorHitZero = Grey2
+	settings.ColorAdditionalEffect = Grey1
 
 
 	-- Controls the display of a background for the chart

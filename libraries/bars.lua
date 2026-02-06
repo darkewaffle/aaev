@@ -6,6 +6,7 @@ local ColorCrit = playersettings.ColorCrit or BluePale
 local ColorMiss = playersettings.ColorMiss or White
 local ColorBlock = playersettings.ColorBlock or Grey3
 local ColorHitZero = playersettings.ColorHitZero or Grey2
+local ColorAE = playersettings.ColorAdditionalEffect or Grey1
 
 local BarNameRoot = "AAEV_Bar"
 
