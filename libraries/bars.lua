@@ -9,6 +9,7 @@ local ColorHitZero = playersettings.ColorHitZero or Grey2
 local ColorAE = playersettings.ColorAdditionalEffect or Grey1
 
 local BarNameRoot = "AAEV_Bar"
+local BarNameAE = BarNameRoot .. "_AE"
 
 function CreateBars(Visible)
 	for i = 1, ChartBars do
@@ -18,6 +19,16 @@ function CreateBars(Visible)
 		windower.prim.set_size(BarName, BarWidth, ChartHeight * -1)
 		windower.prim.set_color(BarName, BarsAlpha, 5*i, 5*i, 5*i)
 		windower.prim.set_visibility(BarName, Visible)
+
+		if AdditionalEffectStackBars then
+			BarName = BarNameAE .. i
+			windower.prim.create(BarName)
+			windower.prim.set_position(BarName, ChartStartX + (BarWidth * (i-1)), ChartStartY)
+			windower.prim.set_size(BarName, BarWidth, ChartHeight * -1)
+			windower.prim.set_color(BarName, BarsAlpha, 5*i, 5*i, 5*i)
+			windower.prim.set_visibility(BarName, false)
+		end
+
 	end
 end
 
@@ -25,22 +36,44 @@ function UpdateBars(TargetID)
 	local MaxDamage = AttackLog[TargetID]["max"]
 
 	for i = 1, ChartBars do
-		local BarName = BarNameRoot .. i
+		local BarAttack = BarNameRoot .. i
+		local BarAE = BarNameAE .. i
 
 		if AttackLog[TargetID][i] then
 			local AttackDamage = AttackLog[TargetID][i]["damage"]
+			local AdditionalEffectDamage = AttackLog[TargetID][i]["additionaleffect"]
 			local AttackResult = AttackLog[TargetID][i]["result"]
 			local DamageHeight = 0
 			
-			if MaxDamage > 0 then
-				DamageHeight = math.floor(AttackDamage / MaxDamage * ChartHeight) * -1
+			if AdditionalEffectSingleBar then
+				AttackDamage = AttackDamage + AdditionalEffectDamage
 			end
 
-			windower.prim.set_visibility(BarName, true)
-			SetBarStyle(BarName, AttackResult, DamageHeight)
+			if MaxDamage > 0 then
+				DamageHeight = math.floor(AttackDamage / MaxDamage * ChartHeight) * -1
+				AEHeight = math.floor(AdditionalEffectDamage / MaxDamage * ChartHeight) * -1
+			end
+
+			windower.prim.set_visibility(BarAttack, true)
+			SetBarStyle(BarAttack, AttackResult, DamageHeight)
+
+			-- If AE damage should be stacked as a second bar and AE damage > 0
+			if not AdditionalEffectSingleBar and AdditionalEffectStackBars and AdditionalEffectDamage > 0 then
+
+				-- Set the position. Horizontal does not need changed (same as the created value), vertical position is offset by the damage height calculated for the physical hit
+				windower.prim.set_position(BarAE, ChartStartX + (BarWidth * (i-1)), ChartStartY + DamageHeight)
+				-- Set size. BarWidth is unchanged, height is determined by Additional Effect Damage / Max Damage.
+				windower.prim.set_size(BarAE, BarWidth, AEHeight)
+
+				SetBarColor(BarAE, ColorAE)
+				windower.prim.set_visibility(BarAE, true)
+			else
+				windower.prim.set_visibility(BarAE, false)
+			end
 
 		else
-			windower.prim.set_visibility(BarName, false)
+			windower.prim.set_visibility(BarAttack, false)
+			windower.prim.set_visibility(BarAE, false)
 		end
 	end
 end
@@ -49,6 +82,11 @@ function DisplayBars(Visible)
 	for i = 1, ChartBars do
 		local BarName = BarNameRoot .. i
 		windower.prim.set_visibility(BarName, Visible)
+
+		if AdditionalEffectStackBars then
+			BarName = BarNameAE .. i
+			windower.prim.set_visibility(BarName, Visible)
+		end
 	end
 end
 
