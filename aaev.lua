@@ -16,7 +16,7 @@ require "libraries/int_to_binary"
 texts = require "texts"
 packets = require "packets"
 
-local PlayerID = windower.ffxi.get_player()["id"]
+local PlayerID = 0
 local RegisteredEventIDs = {}
 
 local AutoDemo = playersettings.AutoDemo
@@ -25,16 +25,29 @@ if AutoDemo == nil then
 end
 
 function OnLoad()
+	table.insert(RegisteredEventIDs, windower.register_event('login', OnLogin))
 	table.insert(RegisteredEventIDs, windower.register_event('unload', OnUnload))
 	table.insert(RegisteredEventIDs, windower.register_event('incoming chunk', OnChunk))
 	table.insert(RegisteredEventIDs, windower.register_event('zone change', OnZone))
 	table.insert(RegisteredEventIDs, windower.register_event('status change', OnStatusChange))
 	table.insert(RegisteredEventIDs, windower.register_event('addon command', OnCommand))
 
+	GetPlayerID()
 	CreateChart(false)
 
 	if AutoDemo then
 		DemoChart()
+	end
+end
+
+function OnLogin()
+	GetPlayerID()
+end
+
+function GetPlayerID()
+	local PlayerData = windower.ffxi.get_player()
+	if PlayerData then
+		PlayerID = PlayerData["id"]
 	end
 end
 
@@ -129,6 +142,17 @@ function OnCommand(...)
 
 	if CommandParameters[1] == "demo" then
 		DemoChart()
+	end
+
+	if CommandParameters[1] == "print" then
+		for k, v in pairs(AttackLog) do
+			print(k)
+			if type(v) == "table" then
+				for k2, v2 in ipairs(v) do
+					print(k2 .. ": " .. v2["result"] .. " || " .. v2["damage"] .. " || " .. v2["additionaleffect"])
+				end
+			end
+		end
 	end
 
 end
