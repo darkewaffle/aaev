@@ -3,6 +3,9 @@ local settings = {}
 	-- "full" or "simple"
 	settings.DisplayMode = "full"
 
+	-- Causes the data to not be tracked per target but rather across all targets, the chart will not be reset when attacking a new target.
+	settings.DisplayContinuous = false
+
 	-- When true then any additional effect damage will be added to the base hit damage for the purposes of determining Max damage dealt and size of the bar
 	-- Each hit will be represented as a single bar
 	settings.AdditionalEffectSingleBar = false

@@ -19,8 +19,18 @@ if AdditionalEffectStackBars == nil then
 	AdditionalEffectStackBars = false
 end
 
+DisplayContinuous = playersettings.DisplayContinuous
+if DisplayContinuous == nil then
+	DisplayContinuous = false
+end
+
+-- If DisplayContinuous is enabled then TargetOverride will take the place of TargetID for all operations - recording every hit to a single log
+if DisplayContinuous then
+	TargetOverride = "ALLTARGETS"
+end
+
 function RecordAttackData(AttackPacket)
-	local ActionTarget = AttackPacket["Target 1 ID"]
+	local ActionTarget = TargetOverride or AttackPacket["Target 1 ID"]
 	local AttackCount = AttackPacket["Target 1 Action Count"]
 	local AttackPrefix = "Target 1 Action "
 

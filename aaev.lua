@@ -56,13 +56,14 @@ function OnChunk(id, original, modified, injected, blocked)
 		if ActionSource == PlayerID and ActionCategory == 1 then
 			RecordAttackData(ActionPacket)
 
-			local TargetID = ActionPacket["Target 1 ID"]
+			local TargetID = TargetOverride or ActionPacket["Target 1 ID"]
 			TrimAttackLog(TargetID)
 			UpdateChart(TargetID)
 		end
 
 	-- NPC status update
-	elseif id == 0x00E then
+	-- If DisplayContinuous is enabled then it is not necessary to identify deaths and reset target logs as all data exists in a single log
+	elseif id == 0x00E and not DisplayContinuous then
 
 		local NPCUpdatePacket = packets.parse('incoming', original)
 		local NPCMask = IntToBinary(NPCUpdatePacket["Mask"])
@@ -102,7 +103,7 @@ function OnStatusChange(new_status_id, old_status_id)
 	if new_status_id == 1 then
 		local CurrentTarget = windower.ffxi.get_mob_by_target("t")
 		if CurrentTarget then
-			local TargetID = CurrentTarget["id"]
+			local TargetID = TargetOverride or CurrentTarget["id"]
 			TrimAttackLog(TargetID)
 			UpdateChart(TargetID)
 		end
