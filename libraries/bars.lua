@@ -146,7 +146,7 @@ function SetBarStyle(BarName, Result, DamageHeight)
 
 		elseif Result == AE_HEAL then
 			windower.prim.set_size(BarName, BarWidth, DamageHeight)
-			SetBarColor(BarName, ColorHeal)
+			SetBarColor(BarName, ColorAEHeal)
 		end
 
 	elseif DisplayMode == "simple" then
