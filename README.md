@@ -1,6 +1,7 @@
 # Auto Attacks Easily Visualized
 
-[Image of an example AAEV Chart](https://i.imgur.com/r6K0wdm.png)
+Example AAEV Charts [1](https://i.imgur.com/r6K0wdm.png) [2](https://i.imgur.com/bJ8JQMD.png)
+
 
 ## How To
 1. Download aaev.lua, aaev_settings.lua and the libraries folder. aaev.lua and the libraries folder can be found in the zip file under [Releases](https://github.com/darkewaffle/aaev/releases). You only need to download the settings file if you do not already have one - although it could change over time as new settings are supported.
