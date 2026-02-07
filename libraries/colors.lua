@@ -5,6 +5,7 @@ RedDark = {110, 0, 0}
 Green = {0, 237, 0}
 GreenPale = {119, 237, 119}
 GreenDark = {0, 110, 0}
+GreenLime = {102, 255, 7}
 
 Blue = {0, 0, 237}
 BluePale = {119, 119, 237}

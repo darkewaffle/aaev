@@ -37,7 +37,7 @@ end
 
 function UpdateLabels(TargetID)
 	if EnableMaxLabel then
-		local MaxDamage = AttackLog[TargetID]["max"]
+		local MaxDamage = AttackLog[TargetID][ATTACK_MAX]
 		local MaxDamageString = "0"
 
 		if MaxDamage < 100 then
@@ -55,7 +55,7 @@ function UpdateLabels(TargetID)
 	end
 
 	if EnableHitRate then
-		local HitRate = (AttackLog[TargetID]["count"] - AttackLog[TargetID][ATTACK_MISS]) / AttackLog[TargetID]["count"] * 100
+		local HitRate = (AttackLog[TargetID][ATTACK_COUNT] - AttackLog[TargetID][ATTACK_MISS]) / AttackLog[TargetID][ATTACK_COUNT] * 100
 		local HitRateString = string.format("%.1f", HitRate)
 		HitRateLabel:visible(true)
 		HitRateLabel:text(HitRateLabelPrefix .. HitRateString .. "%")

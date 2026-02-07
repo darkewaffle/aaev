@@ -12,6 +12,7 @@ require "libraries/background"
 require "libraries/bars"
 require "libraries/labels"
 require "libraries/int_to_binary"
+require "libraries/clamp"
 
 texts = require "texts"
 packets = require "packets"
@@ -149,7 +150,7 @@ function OnCommand(...)
 			print(k)
 			if type(v) == "table" then
 				for k2, v2 in ipairs(v) do
-					print(k2 .. ": " .. v2["result"] .. " || " .. v2["damage"] .. " || " .. v2["additionaleffect"])
+					print(k2 .. ": " .. v2[ATTACK_RESULT] .. " || " .. v2[ATTACK_DAMAGE] .. " || " .. v2[AE_RESULT] .. " || " .. v2[AE_DAMAGE])
 				end
 			end
 		end

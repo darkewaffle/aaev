@@ -14,7 +14,7 @@ local settings = {}
 	-- Each hit that includes an additional effect that deals damage will be displayed as two bars stacked together
 	-- Note that this also effectively doubles the number of bars that the chart is tracking - if you experience performance issues then turning this off or reducing the number of ChartBars may help.
 	-- AdditionalEffectSingleBar and AdditionalEffectStackBars should not be used together. If they are both true then only AdditionalEffectSingleBar will take effect.
-	settings.AdditionalEffectStackBars = false
+	settings.AdditionalEffectStackBars = true
 
 	-- When true the demo dataset and chart will be automatically displayed when the addon is loaded
 	-- Useful to quickly see the results of adjusting your settings and reload to iterate
@@ -42,7 +42,9 @@ local settings = {}
 	settings.ColorMiss = White
 	settings.ColorBlock = Grey3
 	settings.ColorHitZero = Grey2
+	settings.ColorHeal = GreenLime
 	settings.ColorAdditionalEffect = Grey1
+	settings.ColorAdditionalEffectHeal = GreenLime
 
 
 	-- Controls the display of a background for the chart
