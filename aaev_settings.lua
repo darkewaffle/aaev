@@ -54,6 +54,9 @@ local settings = {}
 	-- Controls the space between the bounds of the chart data and the edge of the background
 	settings.BGPaddingX = 5
 	settings.BGPaddingY = 25
+	-- Controls the position of the background relative to the chart.
+	-- BGOffsetX <0 moves it left, >0 moves it right.
+	-- BGOffsetY >0 moves it up, <0 moves it down.
 	settings.BGOffsetX = 0
 	settings.BGOffsetY = 0
 	-- Transparency for the backcround
