@@ -42,12 +42,13 @@ end
 
 local AttackMessageMap =
 	{
-		[1] = ATTACK_HIT,
-		[15] = ATTACK_MISS,
-		[63] = ATTACK_MISS,
-		[67] = ATTACK_CRIT,
-		[69] = ATTACK_BLOCK,
-		[373] = ATTACK_HEAL
+		[1] = ATTACK_HIT,			-- Hit
+		[15] = ATTACK_MISS,			-- Miss
+		[63] = ATTACK_MISS,			-- Miss
+		[67] = ATTACK_CRIT,			-- Crit
+		[69] = ATTACK_BLOCK,		-- Block
+		[70] = ATTACK_BLOCK,		-- Parry
+		[373] = ATTACK_HEAL			-- Hit that heals
 	}
 
 local AdditionalEffectMessageMap =
