@@ -141,6 +141,10 @@ function OnCommand(...)
 		DisplayChart(true)
 	end
 
+	if CommandParameters[1] == "hide" then
+		DisplayChart(false)
+	end
+
 	if CommandParameters[1] == "simple" then
 		DisplayMode = "simple"
 	end
