@@ -1,5 +1,5 @@
 _addon.name = "AAEV"
-_addon.version = "0.9.2"
+_addon.version = "0.9.3"
 _addon.author = "darkwaffle"
 _addon.command = "AAEV"
 
@@ -129,7 +129,7 @@ function OnStatusChange(new_status_id, old_status_id)
 		end
 	else
 		if AutoHide then
-		DisplayChart(false)
+			DisplayChart(false)
 		end
 	end
 end
