@@ -16,6 +16,10 @@ local settings = {}
 	-- AdditionalEffectSingleBar and AdditionalEffectStackBars should not be used together. If they are both true then only AdditionalEffectSingleBar will take effect.
 	settings.AdditionalEffectStackBars = true
 
+	-- When true the chart will be automatically hidden when you are no longer engaged and attacking an enemy.
+	-- When false the chart will remain visible when you disengage. It will still be hidden when changing zones.
+	settings.AutoHide = true
+
 	-- When true the demo dataset and chart will be automatically displayed when the addon is loaded
 	-- Useful to quickly see the results of adjusting your settings and reload to iterate
 	settings.AutoDemo = false
@@ -56,7 +60,7 @@ local settings = {}
 	settings.BGPaddingY = 25
 	-- Controls the position of the background relative to the chart.
 	-- BGOffsetX <0 moves it left, >0 moves it right.
-	-- BGOffsetY >0 moves it up, <0 moves it down.
+	-- BGOffsetY <0 moves it down, >0 moves it up.
 	settings.BGOffsetX = 0
 	settings.BGOffsetY = 0
 	-- Transparency for the backcround

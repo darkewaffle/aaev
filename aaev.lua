@@ -25,6 +25,11 @@ if AutoDemo == nil then
 	AutoDemo = false
 end
 
+local AutoHide = playersettings.AutoHide
+if AutoHide == nil then
+	AutoHide = true
+end
+
 function OnLoad()
 	table.insert(RegisteredEventIDs, windower.register_event('login', OnLogin))
 	table.insert(RegisteredEventIDs, windower.register_event('unload', OnUnload))
@@ -110,6 +115,7 @@ end
 
 function OnZone()
 	ResetAttackLog()
+	DisplayChart(false)
 end
 
 function OnStatusChange(new_status_id, old_status_id)
@@ -122,7 +128,9 @@ function OnStatusChange(new_status_id, old_status_id)
 			UpdateChart(TargetID)
 		end
 	else
+		if AutoHide then
 		DisplayChart(false)
+		end
 	end
 end
 
