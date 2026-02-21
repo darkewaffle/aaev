@@ -10,6 +10,7 @@ ATTACK_HIT_ZERO = "zero"
 ATTACK_HEAL = "heal"
 AE_HIT = "ae_hit"
 AE_HEAL = "ae_heal"
+AE_TREASURE_HUNTER = "ae_treasure_hunter"
 AE_NONE = "ae_none"
 
 
@@ -19,6 +20,7 @@ AE_RESULT = "ae_result"
 AE_DAMAGE = "ae_damage"
 ATTACK_COUNT = "attack_count"
 ATTACK_MAX = "attack_max"
+TREASURE_HUNTER_LEVEL = "treasure_hunter_level"
 
 AdditionalEffectSingleBar = playersettings.AdditionalEffectSingleBar
 if AdditionalEffectSingleBar == nil then
@@ -57,7 +59,8 @@ local AdditionalEffectMessageMap =
 		[163] = AE_HIT, -- Generic damage (?)
 		--[167] = ?			-- heals the player, not target?
 		[229] = AE_HIT, -- Enspell damage
-		[384] = AE_HEAL -- enspell heal?
+		[384] = AE_HEAL, -- enspell heal?
+		[603] = AE_TREASURE_HUNTER
 	}	
 
 function RecordAttackData(AttackPacket)
@@ -92,6 +95,15 @@ function RecordAttackData(AttackPacket)
 		local AdditionalEffectDamage = AttackPacket[AttackName .. " Added Effect Param"] or 0
 		local AdditionalEffectResult = AdditionalEffectMessageMap[AdditionalEffectMessage] or AE_NONE
 
+
+		-- If the additional effect was a treasure hunter increase proc then the param value (normally considered damage)
+		-- instead represents the new treasure hunter level. Update the AdditionalEffectResult so it is not incorrectly treated as
+		-- a damaging hit and instead record the damage
+		if AdditionalEffectResult == AE_TREASURE_HUNTER then
+			AttackLog[ActionTarget][TREASURE_HUNTER_LEVEL] = AdditionalEffectDamage
+			AdditionalEffectResult = AE_NONE
+			AdditionalEffectDamage = 0
+		end
 
 		local TotalDamage = 0
 		-- Attacks that heal do not count as dealing damage. Plus healing can sometimes be subject to a multiplier and throw off the chart scale.
@@ -135,7 +147,8 @@ function CreateAttackLog(TargetID)
 			[ATTACK_COUNT] = 0,
 			[ATTACK_MAX] = 0,
 			[ATTACK_MISS] = 0,
-			[ATTACK_CRIT] = 0
+			[ATTACK_CRIT] = 0,
+			[TREASURE_HUNTER_LEVEL] = 0
 		}
 end
 
@@ -165,6 +178,7 @@ function CreateDemoLog()
 		[ATTACK_MAX] = DemoMax,
 		[ATTACK_MISS] = 16,
 		[ATTACK_CRIT] = 21,
+		[TREASURE_HUNTER_LEVEL] = 5,
 		[1] = {[ATTACK_RESULT]=ATTACK_MISS, [ATTACK_DAMAGE]=0, [AE_RESULT]=AE_NONE, [AE_DAMAGE]=0},
 		[2] = {[ATTACK_RESULT]=ATTACK_MISS, [ATTACK_DAMAGE]=0, [AE_RESULT]=AE_HIT, [AE_DAMAGE]=10},
 		[3] = {[ATTACK_RESULT]=ATTACK_HIT_ZERO, [ATTACK_DAMAGE]=0, [AE_RESULT]=AE_HIT, [AE_DAMAGE]=10},
