@@ -8,6 +8,9 @@ ATTACK_MISS = "miss"
 ATTACK_BLOCK = "block"
 ATTACK_HIT_ZERO = "zero"
 ATTACK_HEAL = "heal"
+ATTACK_SHADOW = "shadow"
+ATTACK_COUNTER = "counter"
+
 AE_HIT = "ae_hit"
 AE_HEAL = "ae_heal"
 AE_TREASURE_HUNTER = "ae_treasure_hunter"
@@ -45,12 +48,16 @@ end
 local AttackMessageMap =
 	{
 		[1] = ATTACK_HIT,			-- Hit
+		[14] = ATTACK_COUNTER,		-- Counter
 		[15] = ATTACK_MISS,			-- Miss
+		[31] = ATTACK_SHADOW,		-- Shadow
+		[33] = ATTACK_COUNTER,		-- Counter
 		[63] = ATTACK_MISS,			-- Miss
 		[67] = ATTACK_CRIT,			-- Crit
 		[69] = ATTACK_BLOCK,		-- Block
 		[70] = ATTACK_BLOCK,		-- Parry
-		[373] = ATTACK_HEAL			-- Hit that heals
+		[373] = ATTACK_HEAL,		-- Hit that heals
+		[606] = ATTACK_COUNTER		-- Counter
 	}
 
 local AdditionalEffectMessageMap =
@@ -79,13 +86,20 @@ function RecordAttackData(AttackPacket)
 		local AttackDamage = AttackPacket[AttackName .. " Param"]
 		local AttackResult = AttackMessageMap[AttackMessage] or ATTACK_HIT
 
+		-- Attacks that are countered have no attack message but do have a Spike Effect message representing a Counter
+		if AttackMessage == 0 then
+			local SpikeMessage = AttackPacket[AttackName .. " Spike Effect Message"]
+			AttackResult = AttackMessageMap[SpikeMessage] or ATTACK_HIT
+			AttackDamage = 0
+		end
+
 		if AttackResult == ATTACK_MISS then
 			AttackLog[ActionTarget][ATTACK_MISS] = AttackLog[ActionTarget][ATTACK_MISS] + 1
 		elseif AttackResult == ATTACK_CRIT then
 			AttackLog[ActionTarget][ATTACK_CRIT] = AttackLog[ActionTarget][ATTACK_CRIT] + 1
 		end
 
-		if AttackResult ~= ATTACK_MISS and AttackDamage == 0 then
+		if AttackResult ~= ATTACK_MISS and AttackResult ~= ATTACK_COUNTER and AttackDamage == 0 then
 			AttackResult = ATTACK_HIT_ZERO
 		end
 

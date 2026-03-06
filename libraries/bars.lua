@@ -6,6 +6,8 @@ local ColorCrit = playersettings.ColorCrit or BluePale
 local ColorMiss = playersettings.ColorMiss or White
 local ColorBlock = playersettings.ColorBlock or Grey3
 local ColorHitZero = playersettings.ColorHitZero or Grey2
+local ColorCounter = playersettings.ColorCounter or Red
+local ColorShadow = Grey1
 local ColorHeal = playersettings.ColorHeal or GreenLime
 local ColorAE = playersettings.ColorAdditionalEffect or Grey1
 local ColorAEHeal = playersettings.ColorAdditionalEffectHeal or GreenLime
@@ -133,6 +135,14 @@ function SetBarStyle(BarName, Result, DamageHeight)
 			windower.prim.set_size(BarName, BarWidth, BarWidth)
 			SetBarColor(BarName, ColorHitZero)
 
+		elseif Result == ATTACK_COUNTER then
+			windower.prim.set_size(BarName, BarWidth, BarWidth)
+			SetBarColor(BarName, ColorCounter)
+
+		elseif Result == ATTACK_SHADOW then
+			windower.prim.set_size(BarName, BarWidth, BarWidth)
+			SetBarColor(BarName, ColorShadow, 1)
+
 		elseif Result == ATTACK_HEAL then
 			-- Heals do not affect the Max damage which means they can outscale
 			windower.prim.set_size(BarName, BarWidth, DamageHeight)
@@ -167,6 +177,14 @@ function SetBarStyle(BarName, Result, DamageHeight)
 		elseif Result == ATTACK_HIT_ZERO then
 			windower.prim.set_size(BarName, BarWidth, BarWidth)
 			SetBarColor(BarName, ColorHitZero)
+
+		elseif Result == ATTACK_COUNTER then
+			windower.prim.set_size(BarName, BarWidth, BarWidth)
+			SetBarColor(BarName, ColorCounter)
+
+		elseif Result == ATTACK_SHADOW then
+			windower.prim.set_size(BarName, BarWidth, BarWidth)
+			SetBarColor(BarName, ColorShadow, 1)
 
 		elseif Result == ATTACK_HEAL then
 			windower.prim.set_size(BarName, BarWidth, BarWidth)
