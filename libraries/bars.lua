@@ -105,8 +105,9 @@ function DisplayBars(Visible)
 	end
 end
 
-function SetBarColor(BarName, BarColor)
-	windower.prim.set_color(BarName, BarsAlpha, BarColor[1], BarColor[2], BarColor[3])
+function SetBarColor(BarName, BarColor, AlphaOverride)
+	local Alpha = AlphaOverride or BarsAlpha
+	windower.prim.set_color(BarName, Alpha, BarColor[1], BarColor[2], BarColor[3])
 end
 
 function SetBarStyle(BarName, Result, DamageHeight)
