@@ -56,7 +56,7 @@ function UpdateBars(TargetID)
 			end
 
 			if MaxDamage > 0 then
-				DamageHeight = math.floor(AttackDamage / MaxDamage * ChartHeight) * -1
+				DamageHeight = Clamp(math.floor(AttackDamage / MaxDamage * ChartHeight), 1, ChartHeight) * -1
 				AEHeight = math.floor(AdditionalEffectDamage / MaxDamage * ChartHeight) * -1
 
 				-- Heals do not affect max damage so if not clamped their damage can outscale the chart
