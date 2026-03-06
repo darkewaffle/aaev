@@ -46,6 +46,7 @@ local settings = {}
 	settings.ColorMiss = White
 	settings.ColorBlock = Grey3
 	settings.ColorHitZero = Grey2
+	settings.ColorCounter = Red
 	settings.ColorHeal = GreenLime
 	settings.ColorAdditionalEffect = Grey1
 	settings.ColorAdditionalEffectHeal = GreenLime
