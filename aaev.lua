@@ -157,6 +157,11 @@ function OnCommand(...)
 		DemoChart()
 	end
 
+	if CommandParameters[1] == "help" then
+		ChatHelp()
+	end
+
+--[[
 	if CommandParameters[1] == "print" then
 		for k, v in pairs(AttackLog) do
 			print(k)
@@ -166,6 +171,38 @@ function OnCommand(...)
 				end
 			end
 		end
+	end
+
+	if CommandParameters[1] == "stats" then
+		for k, v in pairs(AttackLog) do
+			for k2, v2 in pairs(v) do
+				if type(v2) ~= "table" then
+					print(k2)
+					print(v2)
+				end
+			end
+		end
+	end
+]]
+
+end
+
+function ChatHelp()
+	local HelpContents =
+	{
+		" - - - - - ",
+		"Most settings for AAEV are controlled in the 'aaev_settings.lua' file.",
+		"AAEV supports the following commands to control it while in game.",
+		"      show - forces the chart to display",
+		"      hide - forces the chart to hide",
+		"      simple - changes the display mode to 'simple'",
+		"      full - changes the display mode to 'full'",
+		"      demo - displays the chart using a sample dataset",
+		" - - - - - "
+	}
+
+	for _, Message in ipairs(HelpContents) do
+		windower.add_to_chat(1, Message)
 	end
 
 end
