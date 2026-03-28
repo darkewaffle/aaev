@@ -1,5 +1,5 @@
 _addon.name = "AAEV"
-_addon.version = "0.9.3"
+_addon.version = "1.0.0"
 _addon.author = "darkwaffle"
 _addon.command = "AAEV"
 
