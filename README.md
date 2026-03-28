@@ -18,6 +18,7 @@ Example AAEV Charts [1](https://i.imgur.com/r6K0wdm.png) [2](https://i.imgur.com
 | aaev show | Force the chart to display |
 | aaev hide | Force the chart to hide |
 | aaev demo | Draw the chart using a sample dataset |
+| aaev help | Display a help summary in the chat log |
 
 ## Description
 So the idea behind this was I wanted to turn off all my auto attacks in the log but I didn't want to lose the information they provide. Namely am I missing, am I suddenly dealing noticeably less damage, am I dealing zero damage, etc. So essentially this monitors incoming packets for your own auto attacks, records the results and then turns them into a little chart while you're engaged with that enemy. Additionally the colors, size, appearance, number of bars and more can all be easily customized in a single settings file.
