@@ -39,7 +39,7 @@ function OnLoad()
 	table.insert(RegisteredEventIDs, windower.register_event('login', OnLogin))
 	table.insert(RegisteredEventIDs, windower.register_event('unload', OnUnload))
 	table.insert(RegisteredEventIDs, windower.register_event('incoming chunk', OnChunk))
-	table.insert(RegisteredEventIDs, windower.register_event('zone change', OnZone))
+	--table.insert(RegisteredEventIDs, windower.register_event('zone change', OnZone))
 	table.insert(RegisteredEventIDs, windower.register_event('status change', OnStatusChange))
 	table.insert(RegisteredEventIDs, windower.register_event('addon command', OnCommand))
 
@@ -115,6 +115,10 @@ function OnChunk(id, original, modified, injected, blocked)
 				end
 			end
 		end
+	
+	-- 0x00B indicates a zone change is beginning
+	elseif id == 0x00B then
+		OnZone()
 	end
 end
 
