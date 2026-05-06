@@ -146,6 +146,87 @@ function RecordAttackData(AttackPacket)
 	end
 end
 
+function RecordWSData(WSPacket)
+	local ActionTarget = TargetOverride or WSPacket["Target 1 ID"]
+	local AttackPrefix = "Target 1 Action "
+
+	if not AttackLog[ActionTarget] then
+		CreateAttackLog(ActionTarget)
+	end
+
+	local ValidWSMessages =
+		{
+			[101] = true,
+			[103] = true,
+			[109] = true,
+			[135] = true,
+			[142] = true,
+			[159] = true,
+			[185] = true,
+			[186] = true,
+			[187] = true,
+			[188] = true,
+			[189] = true,
+			[194] = true,
+			[197] = true,
+			[221] = true,
+			[224] = true,
+			[225] = true,
+			[226] = true,
+			[231] = true,
+			[238] = true,
+			[242] = true,
+			[243] = true,
+			[360] = true,
+			[362] = true,
+			[369] = true,
+			[370] = true,
+			[402] = true,
+			[405] = true,
+			[406] = true,
+			[409] = true,
+			[416] = true,
+			[418] = true,
+			[539] = true,
+			[607] = true,
+			[747] = true,
+			[748] = true,
+			[750] = true,
+			[752] = true,
+			[754] = true,
+			[755] = true,
+			[762] = true,
+			[763] = true,
+			[764] = true,
+			[778] = true,
+			[779] = true,
+			[780] = true,
+			[805] = true,
+			[1023] = true
+		}
+
+	local AttackMessageID = WSPacket["Target 1 Action 1 Message"] 
+
+	if ValidWSMessages[AttackMessageID] then
+
+		local WSID = WSPacket["Param"]
+		local WSName = WINDOWER_RESOURCES.weapon_skills[WSID].en
+		local WSDamage = WSPacket["Target 1 Action 1 Param"]
+		local SkillchainPresent = WSPacket["Target 1 Action 1 Has Added Effect"]
+
+		if SkillchainPresent then
+			local SCMessage = WSPacket["Target 1 Action 1 Added Effect Message"]
+			SCName = MAP_SKILLCHAIN_MESSAGES[SCMessage]
+			SCDamage = WSPacket["Target 1 Action 1 Added Effect Param"]
+		else
+			SCName = nil
+			SCDamage = nil
+		end
+
+		table.insert(AttackLog[ActionTarget][WEAPON_SKILL_LOG], {[WS_NAME] = WSName, [WS_DAMAGE] = WSDamage, [SC_NAME] = SCName, [SC_DAMAGE] = SCDamage})
+	end
+end
+
 function TrimAttackLog(TargetID)
 	local TargetLog = AttackLog[TargetID]
 

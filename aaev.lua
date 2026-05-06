@@ -83,6 +83,14 @@ function OnChunk(id, original, modified, injected, blocked)
 			local TargetID = TargetOverride or ActionPacket["Target 1 ID"]
 			TrimAttackLog(TargetID)
 			UpdateChart(TargetID)
+
+		-- The action was made by the player and it is a completed weapon skill
+		elseif ActionSource == PlayerID and ActionCategory == 3 then
+			RecordWSData(ActionPacket)
+
+			local TargetID = TargetOverride or ActionPacket["Target 1 ID"]
+			TrimWSLog(TargetID)
+			UpdateChart(TargetID)
 		end
 
 	-- NPC status update
