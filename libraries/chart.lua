@@ -19,10 +19,12 @@ function DisplayChart(Visible)
 end
 
 function UpdateChart(TargetID)
-	if AttackLog[TargetID] then
+	if AttackLog[TargetID] and #AttackLog[TargetID] > 0 then
 		DisplayBackground(true)
 		UpdateBars(TargetID)
 		UpdateLabels(TargetID)
+	else
+		DisplayChart(false)
 	end
 end
 
