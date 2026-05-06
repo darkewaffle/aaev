@@ -69,7 +69,7 @@ function UpdateLabels(TargetID)
 		local MaxDamage = AttackLog[TargetID][ATTACK_MAX]
 		local MaxDamageString = "0"
 
-		if MaxDamage < 100 then
+		if MaxDamage > 0 and MaxDamage < 100 then
 			MaxDamageString = tostring(MaxDamage)
 		elseif MaxDamage >= 100 and MaxDamage < 1000 then
 			MaxDamageString = tostring(math.floor(MaxDamage / 10) * 10)
@@ -84,7 +84,11 @@ function UpdateLabels(TargetID)
 	end
 
 	if EnableHitRate then
-		local HitRate = (AttackLog[TargetID][ATTACK_COUNT] - AttackLog[TargetID][ATTACK_MISS]) / AttackLog[TargetID][ATTACK_COUNT] * 100
+		local HitRate = 0
+		if AttackLog[TargetID][ATTACK_COUNT] > 0 then
+			HitRate = (AttackLog[TargetID][ATTACK_COUNT] - AttackLog[TargetID][ATTACK_MISS]) / AttackLog[TargetID][ATTACK_COUNT] * 100
+		end
+
 		local HitRateString = string.format("%.1f", HitRate)
 		HitRateLabel:visible(true)
 		HitRateLabel:text(HitRateLabelPrefix .. HitRateString .. "%")
