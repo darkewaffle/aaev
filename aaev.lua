@@ -11,11 +11,16 @@ require "libraries/chart"
 require "libraries/background"
 require "libraries/bars"
 require "libraries/labels"
+
 require "libraries/int_to_binary"
 require "libraries/clamp"
+require "libraries/modify_strings"
+require "libraries/skillchain_messages"
 
 texts = require "texts"
 packets = require "packets"
+WINDOWER_RESOURCES = require "resources"
+
 
 local PlayerID = 0
 local RegisteredEventIDs = {}
