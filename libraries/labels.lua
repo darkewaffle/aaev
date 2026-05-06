@@ -90,7 +90,8 @@ function UpdateLabels(TargetID)
 		HitRateLabel:text(HitRateLabelPrefix .. HitRateString .. "%")
 	end
 
-	if EnableWSDisplay and #AttackLog[TargetID][WEAPON_SKILL_LOG] > 0 then
+	if EnableWSDisplay then
+		if #AttackLog[TargetID][WEAPON_SKILL_LOG] > 0 then
 		local WSText = ""
 
 		local IterateStart = 1
@@ -117,6 +118,7 @@ function UpdateLabels(TargetID)
 		WeaponskillDisplay:text(WSText)
 	else
 		WeaponskillDisplay:visible(false)
+		end
 	end
 end
 
