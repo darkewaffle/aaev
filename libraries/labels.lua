@@ -13,9 +13,9 @@ if EnableWSDisplay == nil then
 	EnableWSDisplay = true
 end
 
-local WeaponskillDisplayReverse = playersettings.WeaponskillDisplayReverse
-if WeaponskillDisplayReverse == nil then
-	WeaponskillDisplayReverse = false
+local ReverseWeaponskills = playersettings.ReverseWeaponskills
+if ReverseWeaponskills == nil then
+	ReverseWeaponskills = false
 end
 
 local MaxLabelPrefix = playersettings.MaxLabelPrefix or "Max: "
@@ -98,7 +98,7 @@ function UpdateLabels(TargetID)
 		local IterateEnd = #AttackLog[TargetID][WEAPON_SKILL_LOG]
 		local IterateStep = 1
 
-		if WeaponskillDisplayReverse then
+			if ReverseWeaponskills then
 			IterateStart = #AttackLog[TargetID][WEAPON_SKILL_LOG]
 			IterateEnd = 1
 			IterateStep = -1
