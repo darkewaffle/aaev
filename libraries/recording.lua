@@ -25,6 +25,14 @@ ATTACK_COUNT = "attack_count"
 ATTACK_MAX = "attack_max"
 TREASURE_HUNTER_LEVEL = "treasure_hunter_level"
 
+WEAPON_SKILL_LOG = "ws_log"
+WS_NAME = "ws_name"
+WS_DAMAGE = "ws_damage"
+SC_NAME = "sc_name"
+SC_DAMAGE = "sc_damage"
+
+RecordedWSCount = playersettings.WeaponskillCount or 5
+
 AdditionalEffectSingleBar = playersettings.AdditionalEffectSingleBar
 if AdditionalEffectSingleBar == nil then
 	AdditionalEffectSingleBar = false
@@ -162,7 +170,8 @@ function CreateAttackLog(TargetID)
 			[ATTACK_MAX] = 0,
 			[ATTACK_MISS] = 0,
 			[ATTACK_CRIT] = 0,
-			[TREASURE_HUNTER_LEVEL] = 0
+			[TREASURE_HUNTER_LEVEL] = 0,
+			[WEAPON_SKILL_LOG] = {}
 		}
 end
 
