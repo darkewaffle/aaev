@@ -8,6 +8,16 @@ if EnableHitRate == nil then
 	EnableHitRate = true
 end
 
+local EnableWSDisplay = playersettings.WeaponskillDisplay
+if EnableWSDisplay == nil then
+	EnableWSDisplay = true
+end
+
+local WeaponskillDisplayReverse = playersettings.WeaponskillDisplayReverse
+if WeaponskillDisplayReverse == nil then
+	WeaponskillDisplayReverse = false
+end
+
 local MaxLabelPrefix = playersettings.MaxLabelPrefix or "Max: "
 local HitRateLabelPrefix = playersettings.HitRateLabelPrefix or "Hit: "
 
@@ -16,6 +26,8 @@ local LabelOffsetUp = playersettings.LabelOffsetUp or 25
 local LabelOffsetDown = playersettings.LabelOffsetDown or 5
 local LabelOffsetRight = playersettings.LabelOffsetRight or 0
 
+local WeaponskillX = playersettings.WeaponskillX or ChartStartX + ChartWidth + BackgroundPaddingX
+local WeaponskillY = playersettings.WeaponskillY or ChartStartY - BackgroundPaddingY
 
 function CreateLabels(Visible)
 	local LabelSettings = GetLabelSettings()
@@ -33,6 +45,23 @@ function CreateLabels(Visible)
 		HitRateLabel = texts.new("HitRate", LabelSettings)
 		HitRateLabel:visible(Visible) 
 	end
+
+	if EnableWSDisplay then
+		LabelSettings.pos.x = WeaponskillX
+		LabelSettings.pos.y = WeaponskillY - ChartHeight
+
+		if EnableBackground then
+			LabelSettings.bg.visible = true
+			LabelSettings.bg.alpha = BackgroundAlpha
+			LabelSettings.bg.red = BackgroundColor[1]
+			LabelSettings.bg.green = BackgroundColor[2]
+			LabelSettings.bg.blue = BackgroundColor[3]
+		end
+
+		WeaponskillDisplay = texts.new("WS", LabelSettings)
+		WeaponskillDisplay:visible(Visible)
+	end
+
 end
 
 function UpdateLabels(TargetID)
@@ -60,6 +89,35 @@ function UpdateLabels(TargetID)
 		HitRateLabel:visible(true)
 		HitRateLabel:text(HitRateLabelPrefix .. HitRateString .. "%")
 	end
+
+	if EnableWSDisplay and #AttackLog[TargetID][WEAPON_SKILL_LOG] > 0 then
+		local WSText = ""
+
+		local IterateStart = 1
+		local IterateEnd = #AttackLog[TargetID][WEAPON_SKILL_LOG]
+		local IterateStep = 1
+
+		if WeaponskillDisplayReverse then
+			IterateStart = #AttackLog[TargetID][WEAPON_SKILL_LOG]
+			IterateEnd = 1
+			IterateStep = -1
+		end
+
+		for i=IterateStart, IterateEnd, IterateStep do
+			local WSInfo = AttackLog[TargetID][WEAPON_SKILL_LOG][i]
+			WSText = WSText .. CleanWSName(WSInfo[WS_NAME]) .. " " .. FormatWSDamage(WSInfo[WS_DAMAGE])
+			if WSInfo[SC_NAME] then
+				WSText = WSText .. " + " .. string.sub(WSInfo[SC_NAME], 1, 5) .. " " .. FormatWSDamage(WSInfo[SC_DAMAGE])
+			end
+
+			WSText = WSText .. " \n"
+		end
+
+		WeaponskillDisplay:visible(true)
+		WeaponskillDisplay:text(WSText)
+	else
+		WeaponskillDisplay:visible(false)
+	end
 end
 
 function DisplayLabels(Visible)
@@ -69,6 +127,10 @@ function DisplayLabels(Visible)
 
 	if EnableHitRate then
 		HitRateLabel:visible(Visible)
+	end
+
+	if EnableWSDisplay then
+		WeaponskillDisplay:visible(Visible)
 	end
 end
 
@@ -113,4 +175,18 @@ function GetLabelSettings()
 	LabelSettings.text.stroke.blue  = playersettings.LabelHighlightColor[3] or 0
 
 	return LabelSettings
+end
+
+function CleanWSName(InputString)
+	InputString = string.gsub(InputString, "Blade: ", "")
+	InputString = string.gsub(InputString, "Tachi: ", "")
+	InputString = string.gsub(InputString, "'", "")
+	InputString = string.gsub(InputString, " ", "")
+	InputString = string.sub(InputString, 1, 5)
+	return " " .. InputString
+end
+
+function FormatWSDamage(InputDamage)
+	InputDamage = SetStringWidth(InputDamage, 5, " ", true)
+	return InputDamage
 end
