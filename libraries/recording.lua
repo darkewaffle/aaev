@@ -244,6 +244,23 @@ function TrimAttackLog(TargetID)
 	end
 end
 
+function TrimWSLog(TargetID)
+	local TargetLog = AttackLog[TargetID][WEAPON_SKILL_LOG]
+
+	if TargetLog then
+		if #TargetLog > RecordedWSCount then
+			local WSStart = #TargetLog - RecordedWSCount + 1
+			local j = 1
+
+			for i = WSStart, #TargetLog do
+				TargetLog[j] = TargetLog[i]
+				TargetLog[i] = nil
+				j = j + 1
+			end
+		end
+	end
+end
+
 function CreateAttackLog(TargetID)
 	AttackLog[TargetID] =
 		{
