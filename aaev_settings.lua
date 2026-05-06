@@ -89,4 +89,16 @@ local settings = {}
 	settings.LabelOffsetDown = 3
 	settings.LabelOffsetRight = 2
 
+
+	-- Controls the display of Weaponskill results
+	settings.DisplayWeaponskills = true
+	-- Controls whether they are displayed top to bottom or bottom to top
+	settings.ReverseWeaponskills = false
+	-- Total number of weaponskill results that are retained and displayed
+	settings.WeaponskillCount = 5
+	-- Sets the exact position of the weaponskill results
+	-- If these are not defined then they will be automatically placed next to the top right corner of the chart
+	--settings.WeaponskillX = 650
+	--settings.WeaponskillY = 500
+
 return settings
