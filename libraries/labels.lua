@@ -8,7 +8,7 @@ if EnableHitRate == nil then
 	EnableHitRate = true
 end
 
-local EnableWSDisplay = playersettings.WeaponskillDisplay
+local EnableWSDisplay = playersettings.DisplayWeaponskills
 if EnableWSDisplay == nil then
 	EnableWSDisplay = true
 end
