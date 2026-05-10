@@ -189,6 +189,7 @@ function CleanWSName(InputString)
 	InputString = string.gsub(InputString, "'", "")
 	InputString = string.gsub(InputString, " ", "")
 	InputString = string.sub(InputString, 1, 5)
+	InputString = SetStringWidth(InputString, 5, " ", true)
 	return " " .. InputString
 end
 
