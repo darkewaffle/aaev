@@ -28,8 +28,10 @@ TREASURE_HUNTER_LEVEL = "treasure_hunter_level"
 WEAPON_SKILL_LOG = "ws_log"
 WS_NAME = "ws_name"
 WS_DAMAGE = "ws_damage"
+WS_RESULT = "ws_result"
 SC_NAME = "sc_name"
 SC_DAMAGE = "sc_damage"
+SC_RESULT = "sc_result"
 
 RecordedWSCount = playersettings.WeaponskillCount or 5
 
@@ -156,23 +158,26 @@ function RecordWSData(WSPacket)
 
 	local AttackMessageID = WSPacket["Target 1 Action 1 Message"] 
 
-	if ValidWSMessages[AttackMessageID] then
+	if MAP_WS_MESSAGES[AttackMessageID] then
 
 		local WSID = WSPacket["Param"]
 		local WSName = WINDOWER_RESOURCES.weapon_skills[WSID].en
 		local WSDamage = WSPacket["Target 1 Action 1 Param"]
+		local WSResult = MAP_WS_MESSAGES[AttackMessageID]
 		local SkillchainPresent = WSPacket["Target 1 Action 1 Has Added Effect"]
 
 		if SkillchainPresent then
 			local SCMessage = WSPacket["Target 1 Action 1 Added Effect Message"]
-			SCName = MAP_SKILLCHAIN_MESSAGES[SCMessage]
+			SCName = MAP_SKILLCHAIN_MESSAGES[SCMessage].name
 			SCDamage = WSPacket["Target 1 Action 1 Added Effect Param"]
+			SCResult = MAP_SKILLCHAIN_MESSAGES[SCMessage].result
 		else
 			SCName = nil
 			SCDamage = nil
+			SCResult = nil
 		end
 
-		table.insert(AttackLog[ActionTarget][WEAPON_SKILL_LOG], {[WS_NAME] = WSName, [WS_DAMAGE] = WSDamage, [SC_NAME] = SCName, [SC_DAMAGE] = SCDamage})
+		table.insert(AttackLog[ActionTarget][WEAPON_SKILL_LOG], {[WS_NAME] = WSName, [WS_DAMAGE] = WSDamage, [WS_RESULT] = WSResult, [SC_NAME] = SCName, [SC_DAMAGE] = SCDamage, [SC_RESULT] = SCResult})
 	end
 end
 
