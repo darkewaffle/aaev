@@ -256,11 +256,11 @@ function CreateDemoLog()
 		[TREASURE_HUNTER_LEVEL] = 5,
 		[WEAPON_SKILL_LOG] = 
 			{
-				[1] = {[WS_NAME] = "Evisceration", [WS_DAMAGE] = 1500},
-				[2] = {[WS_NAME] = "Rudra's Storm", [WS_DAMAGE] = 2000, [SC_NAME] = "Darkness", [SC_DAMAGE] = 5000},
-				[3] = {[WS_NAME] = "Rudra's Storm", [WS_DAMAGE] = 3000, [SC_NAME] = "Darkness", [SC_DAMAGE] = 10000},
-				[4] = {[WS_NAME] = "Viper Bite", [WS_DAMAGE] = 666},
-				[5] = {[WS_NAME] = "Viper Bite", [WS_DAMAGE] = 99999, [SC_NAME] = "Scission", [SC_DAMAGE] = 123}
+				[1] = {[WS_NAME] = "Evisceration", [WS_DAMAGE] = 1500, [WS_RESULT] = ATTACK_HIT},
+				[2] = {[WS_NAME] = "Rudra's Storm", [WS_DAMAGE] = 2000, [WS_RESULT] = ATTACK_HEAL, [SC_NAME] = "Darkness", [SC_DAMAGE] = 5000, [SC_RESULT] = ATTACK_HIT},
+				[3] = {[WS_NAME] = "Rudra's Storm", [WS_DAMAGE] = 3000, [WS_RESULT] = ATTACK_HIT, [SC_NAME] = "Darkness", [SC_DAMAGE] = 10000, [SC_RESULT] = ATTACK_HEAL},
+				[4] = {[WS_NAME] = "Viper Bite", [WS_DAMAGE] = 666, [WS_RESULT] = ATTACK_HIT},
+				[5] = {[WS_NAME] = "Viper Bite", [WS_DAMAGE] = 99999, [WS_RESULT] = ATTACK_HIT, [SC_NAME] = "Scission", [SC_DAMAGE] = 123, [SC_RESULT] = ATTACK_HIT}
 			},
 		[1] = {[ATTACK_RESULT]=ATTACK_MISS, [ATTACK_DAMAGE]=0, [AE_RESULT]=AE_NONE, [AE_DAMAGE]=0},
 		[2] = {[ATTACK_RESULT]=ATTACK_MISS, [ATTACK_DAMAGE]=0, [AE_RESULT]=AE_HIT, [AE_DAMAGE]=10},
