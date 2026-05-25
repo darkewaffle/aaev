@@ -8,7 +8,7 @@ local ColorBlock = playersettings.ColorBlock or Grey3
 local ColorHitZero = playersettings.ColorHitZero or Grey2
 local ColorCounter = playersettings.ColorCounter or Red
 local ColorShadow = Grey1
-local ColorHeal = playersettings.ColorHeal or GreenLime
+ColorHeal = playersettings.ColorHeal or GreenLime
 local ColorAE = playersettings.ColorAdditionalEffect or Grey1
 local ColorAEHeal = playersettings.ColorAdditionalEffectHeal or GreenLime
 
