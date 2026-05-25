@@ -110,9 +110,21 @@ function UpdateLabels(TargetID)
 
 		for i=IterateStart, IterateEnd, IterateStep do
 			local WSInfo = AttackLog[TargetID][WEAPON_SKILL_LOG][i]
-			WSText = WSText .. CleanWSName(WSInfo[WS_NAME]) .. " " .. FormatWSDamage(WSInfo[WS_DAMAGE])
+			local WSLine = CleanWSName(WSInfo[WS_NAME]) .. " " .. FormatWSDamage(WSInfo[WS_DAMAGE])
+
+			if WSInfo[WS_RESULT] == ATTACK_HEAL then
+				WSLine = ColorWrapForTexts(WSLine, ColorHeal[1], ColorHeal[2], ColorHeal[3])
+			end
+			WSText = WSText .. WSLine
+
 			if WSInfo[SC_NAME] then
-				WSText = WSText .. " + " .. string.sub(WSInfo[SC_NAME], 1, 5) .. " " .. FormatWSDamage(WSInfo[SC_DAMAGE])
+				WSText = WSText .. " + "
+				local SCLine = string.sub(WSInfo[SC_NAME], 1, 5) .. " " .. FormatWSDamage(WSInfo[SC_DAMAGE])
+				
+				if WSInfo[SC_RESULT] == ATTACK_HEAL then
+					SCLine = ColorWrapForTexts(SCLine, ColorHeal[1], ColorHeal[2], ColorHeal[3])
+				end
+				WSText = WSText .. SCLine
 			end
 
 			WSText = WSText .. " \n"
