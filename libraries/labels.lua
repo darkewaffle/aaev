@@ -127,6 +127,7 @@ function UpdateLabels(TargetID)
 				WSText = WSText .. SCLine
 			end
 
+			if i ~= IterateEnd then
 			WSText = WSText .. " \n"
 		end
 
