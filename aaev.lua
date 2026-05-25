@@ -16,6 +16,7 @@ require "libraries/int_to_binary"
 require "libraries/clamp"
 require "libraries/modify_strings"
 require "libraries/skillchain_messages"
+require "libraries/weaponskill_messages"
 
 texts = require "texts"
 packets = require "packets"
