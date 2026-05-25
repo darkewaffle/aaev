@@ -33,7 +33,7 @@ local settings = {}
 	-- Starting vertical position of the chart. 0 is the top of the screen, positive values move it down. Range depends on resolution.
 	settings.ChartStartY = 500
 	settings.ChartWidth = 100
-	settings.ChartHeight = 35
+	settings.ChartHeight = 43
 
 
 	-- Transparency for the chart bars
