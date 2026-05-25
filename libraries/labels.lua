@@ -128,8 +128,8 @@ function UpdateLabels(TargetID)
 			end
 
 			if i ~= IterateEnd then
-			WSText = WSText .. " \n"
-		end
+				WSText = WSText .. " \n"
+			end
 		end
 
 		WeaponskillDisplay:visible(true)
