@@ -102,7 +102,7 @@ function UpdateLabels(TargetID)
 		local IterateEnd = #AttackLog[TargetID][WEAPON_SKILL_LOG]
 		local IterateStep = 1
 
-			if ReverseWeaponskills then
+		if ReverseWeaponskills then
 			IterateStart = #AttackLog[TargetID][WEAPON_SKILL_LOG]
 			IterateEnd = 1
 			IterateStep = -1
