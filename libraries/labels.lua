@@ -35,14 +35,14 @@ function CreateLabels(Visible)
 	if EnableMaxLabel then
 		LabelSettings.pos.x = ChartStartX + LabelOffsetRight
 		LabelSettings.pos.y = ChartStartY - ChartHeight - LabelOffsetUp
-		MaxLabel = texts.new("Max", LabelSettings)
+		MaxLabel = WINDOWER_TEXTS.new("Max", LabelSettings)
 		MaxLabel:visible(Visible)
 	end
 
 	if EnableHitRate then
 		LabelSettings.pos.x = ChartStartX + LabelOffsetRight
 		LabelSettings.pos.y = ChartStartY + LabelOffsetDown
-		HitRateLabel = texts.new("HitRate", LabelSettings)
+		HitRateLabel = WINDOWER_TEXTS.new("HitRate", LabelSettings)
 		HitRateLabel:visible(Visible) 
 	end
 
@@ -58,7 +58,7 @@ function CreateLabels(Visible)
 			LabelSettings.bg.blue = BackgroundColor[3]
 		end
 
-		WeaponskillDisplay = texts.new("WS", LabelSettings)
+		WeaponskillDisplay = WINDOWER_TEXTS.new("WS", LabelSettings)
 		WeaponskillDisplay:visible(Visible)
 	end
 

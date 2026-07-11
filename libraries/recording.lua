@@ -33,6 +33,8 @@ SC_NAME = "sc_name"
 SC_DAMAGE = "sc_damage"
 SC_RESULT = "sc_result"
 
+local TARGET_OVERRIDE = 0
+
 RecordedWSCount = playersettings.WeaponskillCount or 5
 
 AdditionalEffectSingleBar = playersettings.AdditionalEffectSingleBar
@@ -81,7 +83,7 @@ local AdditionalEffectMessageMap =
 	}	
 
 function RecordAttackData(AttackPacket)
-	local ActionTarget = TargetOverride or AttackPacket["Target 1 ID"]
+	local ActionTarget = GetTargetOverride() or AttackPacket["Target 1 ID"]
 	local AttackCount = AttackPacket["Target 1 Action Count"]
 	local AttackPrefix = "Target 1 Action "
 
@@ -149,7 +151,7 @@ function RecordAttackData(AttackPacket)
 end
 
 function RecordWSData(WSPacket)
-	local ActionTarget = TargetOverride or WSPacket["Target 1 ID"]
+	local ActionTarget = GetTargetOverride() or WSPacket["Target 1 ID"]
 	local AttackPrefix = "Target 1 Action "
 
 	if not AttackLog[ActionTarget] then
@@ -363,4 +365,12 @@ function CreateDemoLog()
 		[99] = {[ATTACK_RESULT]=ATTACK_HIT_ZERO, [ATTACK_DAMAGE]=0, [AE_RESULT]=AE_HIT, [AE_DAMAGE]=10},
 		[100] = {[ATTACK_RESULT]=ATTACK_HIT_ZERO, [ATTACK_DAMAGE]=0, [AE_RESULT]=AE_HIT, [AE_DAMAGE]=10}
 	}
+end
+
+function GetTargetOverride()
+	if TargetOverride ~= 0 then
+		return TargetOverride
+	else
+		return nil
+	end
 end
