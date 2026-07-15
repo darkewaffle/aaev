@@ -1,31 +1,76 @@
+local HidePetChartTriggers =
+{
+	[29] = "Spirit Surge",
+	[70] = "Heel",
+	[71] = "Leave",
+	[87] = "Dismiss",
+	[89] = "Retreat",
+	[90] = "Release",
+	[139] = "Deactivate",
+	[140] = "Retrieve"
+}
+
 function ParseAction(id, original, modified, injected, blocked)
-	local ActionPacket = WINDOWER_PACKETS.parse('incoming', original)
-	local ActionSource = ActionPacket["Actor"]
-	local ActionCategory = ActionPacket["Category"]
 
-	-- The action was made by the player and it is a melee attack
-	if ActionSource == GetPlayerID() and ActionCategory == 1 then
-		RecordAttackData(ActionPacket)
+	local ActionSource = original:unpack("b32", 6)
 
+	if ActionSource == GetPlayerID() or ActionSource == GetPetID()then
+		local ActionPacket = WINDOWER_PACKETS.parse('incoming', original)
+		local ActionCategory = ActionPacket["Category"]
+		local ActionID = ActionPacket["Param"]
 		local TargetID = GetTargetOverride() or ActionPacket["Target 1 ID"]
-		TrimAttackLog(TargetID)
-		UpdateChart(TargetID)
 
-	-- The action was made by the current pet and it is a melee attack
-	elseif ActionSource == GetPetID() and ActionCategory == 1 then
-		print("pet attack")
-		--RecordAttackData(ActionPacket)
+		-- Player melee attack
+		if ActionSource == GetPlayerID() and ActionCategory == 1 then
+			RecordPlayerAttack(ActionPacket)
+			TrimPlayerAttackLog(TargetID)
+			UpdatePlayerChart(TargetID)
 
-		--local TargetID = GetTargetOverride() or ActionPacket["Target 1 ID"]
-		--TrimAttackLog(TargetID)
-		--UpdateChart(TargetID)
+		-- Pet melee attack
+		elseif ActionSource == GetPetID() and ActionCategory == 1 then
+			RecordPetAttack(ActionPacket)
+			TrimPetAttackLog(TargetID)
+			UpdatePetChart(TargetID)
+			SetPetEnemyTarget(TargetID)
 
-	-- The action was made by the player and it is a completed weapon skill
-	elseif ActionSource == GetPlayerID() and ActionCategory == 3 then
-		RecordWSData(ActionPacket)
+		-- Player weapon skill
+		elseif ActionSource == GetPlayerID() and ActionCategory == 3 then
+			RecordPlayerWS(ActionPacket)
+			TrimPlayerWSLog(TargetID)
+			UpdatePlayerChart(TargetID)
 
-		local TargetID = GetTargetOverride() or ActionPacket["Target 1 ID"]
-		TrimWSLog(TargetID)
-		UpdateChart(TargetID)
+		-- Pet ability targeting a monster
+		elseif ActionSource == GetPetID() and windower.ffxi.get_mob_by_id(TargetID).spawn_type == 16 then
+			local ValidAbility = false
+
+			-- BST Ready
+			if ActionCategory == 11 and GetPlayerJob() == 9 then
+				RecordPetWS(ActionPacket)
+				ValidAbility = true
+
+
+			-- Automaton TP ability that is configured to be visible
+			elseif ActionCategory == 11 and GetPlayerJob() == 18 and MAP_AUTOMATON_WHITELIST[ActionID].display then
+				RecordPetWS(ActionPacket)
+				ValidAbility = true
+
+			-- Avatar bloodpact or Wyvern breath
+			elseif ActionCategory == 13 then
+				RecordAvatarWS(ActionPacket)
+				ValidAbility = true
+			end
+
+			if ValidAbility then
+				TrimPetWSLog(TargetID)
+				UpdatePetChart(TargetID)
+				SetPetEnemyTarget(TargetID)
+			end
+
+		-- Job abilities used by the player that trigger hiding the pet chart
+		elseif ActionSource == GetPlayerID() and ActionCategory == 6 then
+			if HidePetChartTriggers[ActionID] and AutoHide then
+				DisplayPetChart(false)
+			end
+		end
 	end
 end

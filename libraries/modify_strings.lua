@@ -1,21 +1,3 @@
-function SetStringWidth(StringInput, ToWidth, PadCharacter, PadLeft)
-	local Padding = PadCharacter or " "
-	local StringOutput = ""
-	local StringInput = tostring(StringInput)
-
-	if #StringInput < ToWidth then
-		if PadLeft then
-			StringOutput = string.rep(Padding, ToWidth - #StringInput) .. StringInput
-		else
-			StringOutput = StringInput .. string.rep(Padding, ToWidth - #StringInput)
-		end
-	else
-		StringOutput = string.sub(StringInput, 1, ToWidth)
-	end
-
-	return StringOutput
-end
-
 function ColorWrapForTexts(StringToWrap, Red, Green, Blue)
 	Red = Red or 255
 	Green = Green or 255

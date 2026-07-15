@@ -1,28 +1,30 @@
 function ParseNPCUpdate(id, original, modified, injected, blocked)
 	local NPCUpdatePacket = WINDOWER_PACKETS.parse('incoming', original)
-	local NPCMask = IntToBinary(NPCUpdatePacket["Mask"])
+	local NPCID = NPCUpdatePacket["NPC"]
+
 	local NPCStatus = NPCUpdatePacket["Status"]
+	local NPCIsDead = NPCStatus >= 2
 
-	-- NPC status is dead and the mask indicates this is an actual update
-	-- IntToBinary translates right-to-left, so for instance 7 is translated to 00000111
-	-- So the sixth character in the string indicates an HP or Status change
-	if (NPCStatus == 2 or NPCStatus == 3) and NPCMask[6] == "1" then
+	local NPCMaskBools = { original:unpack("q8", 11) }
+	local NPCStatusChanged = NPCMaskBools[3]
+	local NPCTerminated = NPCMaskBools[6]
 
-		local NPCID = NPCUpdatePacket["NPC"]
-		local NPCMob = windower.ffxi.get_mob_by_id(NPCID)
-		local NPCSpawnType = 0
+	local NPCDied = NPCIsDead and NPCStatusChanged
 
-		if NPCMob then
-			NPCSpawnType = NPCMob["spawn_type"]
+	if (NPCDied or NPCTerminated) and not DeadIDs[NPCID] then
+
+		DeadIDs[NPCID] = true
+
+		if not LogResetPending then
+			LogResetPending = true
+			coroutine.schedule(ResetAttackData, 20)
 		end
 
-		-- spawn_type 16 appears to indicate enemy mobs (as opposed to pets, trusts, friendlies, etc)
-		if NPCSpawnType == 16 and not DeadIDs[NPCID] then
-			DeadIDs[NPCID] = true
-			if not LogResetPending then
-				LogResetPending = true
-				coroutine.schedule(ResetAttackData, 20)
+		if NPCID == GetPetEnemyTarget() then
+			if AutoHide then
+				DisplayPetChart(false)
 			end
+			SetPetEnemyTarget(0)
 		end
 	end
 end

@@ -14,7 +14,8 @@ require "libraries/background"
 require "libraries/bars"
 require "libraries/labels"
 
-require "libraries/int_to_binary"
+require "libraries/automaton_whitelist"
+require "libraries/bloodpact_messages"
 require "libraries/clamp"
 require "libraries/modify_strings"
 require "libraries/skillchain_messages"
@@ -28,7 +29,9 @@ require "pack"
 local PlayerID = 0
 local PlayerIndex = 0
 local PetID = 0
-local PetIndex = 0
+local PetEnemyTarget = 0
+local PlayerMainJob = 0
+local IsPetJob = false
 local RegisteredEventIDs = {}
 
 local AutoDemo = playersettings.AutoDemo
@@ -36,14 +39,20 @@ if AutoDemo == nil then
 	AutoDemo = false
 end
 
-local AutoHide = playersettings.AutoHide
+AutoHide = playersettings.AutoHide
 if AutoHide == nil then
 	AutoHide = true
+end
+
+EnablePetChart = playersettings.PetChart
+if EnablePetChart == nil then
+	EnablePetChart = false
 end
 
 function OnLoad()
 	table.insert(RegisteredEventIDs, windower.register_event('login', OnLogin))
 	table.insert(RegisteredEventIDs, windower.register_event('unload', OnUnload))
+	table.insert(RegisteredEventIDs, windower.register_event('job change', OnJobChange))
 	table.insert(RegisteredEventIDs, windower.register_event('zone change', OnZoneEntrance))
 	table.insert(RegisteredEventIDs, windower.register_event('status change', OnStatusChange))
 	table.insert(RegisteredEventIDs, windower.register_event('incoming chunk', OnChunk))
@@ -51,8 +60,11 @@ function OnLoad()
 	table.insert(RegisteredEventIDs, windower.register_event('addon command', OnCommand))
 
 	SetPlayerID()
-	SetPlayerIndex()
-	CreateChart(false)
+	SetPlayerJob()
+	SetPetID()
+
+	CreatePlayerChart(false)
+	CreatePetChart(false)
 
 	if AutoDemo then
 		DemoChart()
@@ -61,7 +73,7 @@ end
 
 function OnLogin()
 	SetPlayerID()
-	SetPlayerIndex()
+	SetPlayerJob()
 end
 
 function OnUnload()
@@ -70,8 +82,23 @@ function OnUnload()
 	end
 end
 
+function OnJobChange(main_job_id, main_job_level, sub_job_id, sub_job_level)
+	if main_job_id == GetPlayerJob() then
+		-- Triggered by subjob change, do nothing.
+	else
+		-- Main job has changed.
+		SetPlayerJob(main_job_id)
+
+		if EnablePetChart and GetIsPetJob() then
+			CreatePetChart()
+		else
+			DestroyPetChart()
+		end
+	end
+end
+
 function OnZoneEntrance()
-	SetPlayerIndex()
+	SetPetID()
 end
 
 function OnStatusChange(new_status_id, old_status_id)
@@ -80,12 +107,12 @@ function OnStatusChange(new_status_id, old_status_id)
 		local CurrentTarget = windower.ffxi.get_mob_by_target("t")
 		if CurrentTarget then
 			local TargetID = GetTargetOverride() or CurrentTarget["id"]
-			TrimAttackLog(TargetID)
-			UpdateChart(TargetID)
+			TrimPlayerAttackLog()
+			UpdatePlayerChart(TargetID)
 		end
 	else
 		if AutoHide then
-			DisplayChart(false)
+			DisplayPlayerChart(false)
 		end
 	end
 end
@@ -110,8 +137,8 @@ function OnChunk(id, original, modified, injected, blocked)
 end
 
 function OnZoneExit()
-	ResetAttackLog()
-	DisplayChart(false)
+	ResetAttackLogs()
+	DisplayCharts(false)
 end
 
 function SetPlayerID()
@@ -129,35 +156,46 @@ function GetPlayerID()
 	end
 end
 
-function SetPlayerIndex()
-	local PlayerData = windower.ffxi.get_player()
-	if PlayerData then
-		PlayerIndex = PlayerData["index"]
+function SetPlayerJob(JobID)
+	if JobID and JobID > 0 then
+		PlayerMainJob = JobID
+	else
+		local PlayerData = windower.ffxi.get_player()
+		if PlayerData then
+			PlayerMainJob = PlayerData.main_job_id
+		end
+	end
+
+	if (PlayerMainJob == 9 or PlayerMainJob == 14 or PlayerMainJob == 15 or PlayerMainJob == 18) then
+		SetIsPetJob(true)
+	else
+		SetIsPetJob(false)
 	end
 end
 
-function GetPlayerIndex()
-	if PlayerIndex == 0 then
+function GetPlayerJob()
+	if PlayerMainJob == 0 then
 		return nil
 	else
-		return PlayerIndex
+		return PlayerMainJob
 	end
 end
 
-function SetPetIndex(Index)
-	PetIndex = Index
+function SetIsPetJob(State)
+	IsPetJob = State
 end
 
-function GetPetIndex()
-	if PetIndex == 0 then
-		return nil
-	else
-		return PetIndex
-	end
+function GetIsPetJob()
+	return IsPetJob
 end
 
 function SetPetID(NewPetID)
-	PetID = NewPetID
+	local GetPet = windower.ffxi.get_mob_by_target("pet")
+	if GetPet then
+		PetID = GetPet.id
+	else
+		PetID = 0
+	end
 end
 
 function GetPetID()
@@ -168,15 +206,29 @@ function GetPetID()
 	end
 end
 
+function SetPetEnemyTarget(TargetID)
+	if not DeadIDs[TargetID] then
+		PetEnemyTarget = TargetID
+	end
+end
+
+function GetPetEnemyTarget()
+	if PetEnemyTarget ~= 0 then
+		return PetEnemyTarget
+	else
+		return nil
+	end
+end
+
 function OnCommand(...)
 	local CommandParameters = {...}
 
 	if CommandParameters[1] == "show" then
-		DisplayChart(true)
+		DisplayCharts(true)
 	end
 
 	if CommandParameters[1] == "hide" then
-		DisplayChart(false)
+		DisplayCharts(false)
 	end
 
 	if CommandParameters[1] == "simple" then
@@ -196,8 +248,9 @@ function OnCommand(...)
 	end
 
 --[[
-	if CommandParameters[1] == "print" then
-		for k, v in pairs(AttackLog) do
+	if CommandParameters[1] == "petlog" then
+		local PetLog = GetPetAttackLog()
+		for k, v in pairs(PetLog) do
 			print(k)
 			if type(v) == "table" then
 				for k2, v2 in ipairs(v) do
@@ -207,12 +260,29 @@ function OnCommand(...)
 		end
 	end
 
-	if CommandParameters[1] == "stats" then
+	if CommandParameters[1] == "petws" then
+		print(GetPetID())
+		local PetLog = GetPetAttackLog()
+		for k, v in pairs(PetLog) do
+			print(k)
+			--if type(v) == "table" then
+				if v[WEAPON_SKILL_LOG] then
+					print("ws log found")
+				end
+
+				for k2, v2 in ipairs(v[WEAPON_SKILL_LOG]) do
+					print(k2 .. ": " .. v2[WS_NAME] .. " || " .. v2[WS_DAMAGE] .. " || " .. tostring(v2[WS_RESULT]) .. " || " .. tostring(v2[SC_NAME]) .. " || " .. tostring(v2[SC_DAMAGE]) .. " || " .. tostring(v2[SC_RESULT]))
+				end
+			--end
+		end
+	end
+
+	if CommandParameters[1] == "playerlog" then
 		for k, v in pairs(AttackLog) do
-			for k2, v2 in pairs(v) do
-				if type(v2) ~= "table" then
-					print(k2)
-					print(v2)
+			print(k)
+			if type(v) == "table" then
+				for k2, v2 in ipairs(v) do
+					print(k2 .. ": " .. v2[ATTACK_RESULT] .. " || " .. v2[ATTACK_DAMAGE] .. " || " .. v2[AE_RESULT] .. " || " .. v2[AE_DAMAGE])
 				end
 			end
 		end

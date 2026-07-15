@@ -101,4 +101,15 @@ local settings = {}
 	--settings.WeaponskillX = 650
 	--settings.WeaponskillY = 500
 
+
+	settings.PetChart = true
+	settings.PetChartBars = 20
+	settings.PetChartStartX = 500
+	settings.PetChartStartY = 650
+	settings.PetChartWidth = 100
+	settings.PetChartHeight = 43
+	settings.PetWeaponskillCount = 5
+	--settings.PetWeaponskillX = 600
+	--settings.PetWeaponskillY = 600
+
 return settings

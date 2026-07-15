@@ -26,29 +26,65 @@ local LabelOffsetUp = playersettings.LabelOffsetUp or 25
 local LabelOffsetDown = playersettings.LabelOffsetDown or 5
 local LabelOffsetRight = playersettings.LabelOffsetRight or 0
 
-local WeaponskillX = playersettings.WeaponskillX or ChartStartX + ChartWidth + BackgroundPaddingX
-local WeaponskillY = playersettings.WeaponskillY or ChartStartY - BackgroundPaddingY
+function CreateLabels(Visible, ChartType)
+	local LabelX = 0
+	local LabelY = 0
+	local BackgroundWidth = 0
+	local WeaponskillX = 0
+	local WeaponskillY = 0
 
-function CreateLabels(Visible)
+	if ChartType == TYPE_PLAYER then
+		LabelX = ChartStartX
+		LabelY = ChartStartY
+		BackgroundWidth = ChartWidth
+		BackgroundHeight = ChartHeight
+		WeaponskillX = playersettings.WeaponskillX or ChartStartX + ChartWidth + BackgroundPaddingX
+		WeaponskillY = playersettings.WeaponskillY or ChartStartY - BackgroundPaddingY
+
+	elseif ChartType == TYPE_PET then
+		LabelX = PetChartStartX
+		LabelY = PetChartStartY
+		BackgroundWidth = PetChartWidth
+		BackgroundHeight = PetChartHeight
+		WeaponskillX = playersettings.PetWeaponskillX or PetChartStartX + PetChartWidth + BackgroundPaddingX
+		WeaponskillY = playersettings.PetWeaponskillY or PetChartStartY - BackgroundPaddingY
+
+	else
+		print("Invalid ChartType in CreateLabels.")
+		return
+	end
+
 	local LabelSettings = GetLabelSettings()
 
 	if EnableMaxLabel then
-		LabelSettings.pos.x = ChartStartX + LabelOffsetRight
-		LabelSettings.pos.y = ChartStartY - ChartHeight - LabelOffsetUp
-		MaxLabel = WINDOWER_TEXTS.new("Max", LabelSettings)
-		MaxLabel:visible(Visible)
+		LabelSettings.pos.x = LabelX + LabelOffsetRight
+		LabelSettings.pos.y = LabelY - BackgroundHeight - LabelOffsetUp
+
+		if ChartType == TYPE_PLAYER then
+			PlayerMaxLabel = WINDOWER_TEXTS.new("PlayerMax", LabelSettings)
+			PlayerMaxLabel:visible(Visible)
+		elseif ChartType == TYPE_PET then
+			PetMaxLabel = WINDOWER_TEXTS.new("PetMax", LabelSettings)
+			PetMaxLabel:visible(Visible)
+		end
 	end
 
 	if EnableHitRate then
-		LabelSettings.pos.x = ChartStartX + LabelOffsetRight
-		LabelSettings.pos.y = ChartStartY + LabelOffsetDown
-		HitRateLabel = WINDOWER_TEXTS.new("HitRate", LabelSettings)
-		HitRateLabel:visible(Visible) 
+		LabelSettings.pos.x = LabelX + LabelOffsetRight
+		LabelSettings.pos.y = LabelY + LabelOffsetDown
+
+		if ChartType == TYPE_PLAYER then
+			PlayerHitLabel = WINDOWER_TEXTS.new("PlayerHit", LabelSettings)
+			PlayerHitLabel:visible(Visible)
+		elseif ChartType == TYPE_PET then
+			PetHitLabel = WINDOWER_TEXTS.new("PetHit", LabelSettings)
+			PetHitLabel:visible(Visible)
+		end
 	end
 
 	if EnableWSDisplay then
 		LabelSettings.pos.x = WeaponskillX
-		LabelSettings.pos.y = WeaponskillY - ChartHeight
+		LabelSettings.pos.y = WeaponskillY - BackgroundHeight
 
 		if EnableBackground then
 			LabelSettings.bg.visible = true
@@ -58,14 +94,44 @@ function CreateLabels(Visible)
 			LabelSettings.bg.blue = BackgroundColor[3]
 		end
 
-		WeaponskillDisplay = WINDOWER_TEXTS.new("WS", LabelSettings)
-		WeaponskillDisplay:visible(Visible)
+		if ChartType == TYPE_PLAYER then
+			PlayerWSDisplay = WINDOWER_TEXTS.new("PlayerWS", LabelSettings)
+			PlayerWSDisplay:visible(Visible)
+		elseif ChartType == TYPE_PET then
+			PetWSDisplay = WINDOWER_TEXTS.new("PetWS", LabelSettings)
+			PetWSDisplay:visible(Visible)
+		end
 	end
-
 end
 
-function UpdateLabels(TargetID)
+function CreatePetLabels(Visible)
+	CreateLabels(Visible, TYPE_PET)
+end
+
+function CreatePlayerLabels(Visible)
+	CreateLabels(Visible, TYPE_PLAYER)
+end
+
+function UpdateLabels(TargetID, ChartType)
+	UpdateMaxLabel(TargetID, ChartType)
+	UpdateHitLabel(TargetID, ChartType)
+	UpdateWSLabel(TargetID, ChartType)
+end
+
+function UpdatePetLabels(TargetID)
+	UpdateLabels(TargetID, TYPE_PET)
+end
+
+function UpdatePlayerLabels(TargetID)
+	UpdateLabels(TargetID, TYPE_PLAYER)
+end
+
+function UpdateMaxLabel(TargetID, ChartType)
 	if EnableMaxLabel then
+
+		local MaxLabel = GetLabelMax(ChartType)
+		local AttackLog = GetAttackLogForType(ChartType)
+
 		local MaxDamage = AttackLog[TargetID][ATTACK_MAX]
 		local MaxDamageString = "0"
 
@@ -78,79 +144,127 @@ function UpdateLabels(TargetID)
 		elseif MaxDamage >= 10000 then
 			MaxDamageString = tostring (math.floor(MaxDamage / 1000) * 1000)
 		end
- 
+
 		MaxLabel:visible(true)
 		MaxLabel:text(MaxLabelPrefix .. MaxDamageString)
 	end
+end
 
+function UpdateHitLabel(TargetID, ChartType)
 	if EnableHitRate then
+		local HitLabel = GetLabelHit(ChartType)
+		local AttackLog = GetAttackLogForType(ChartType)
+
 		local HitRate = 0
 		if AttackLog[TargetID][ATTACK_COUNT] > 0 then
 			HitRate = (AttackLog[TargetID][ATTACK_COUNT] - AttackLog[TargetID][ATTACK_MISS]) / AttackLog[TargetID][ATTACK_COUNT] * 100
 		end
 
 		local HitRateString = string.format("%.1f", HitRate)
-		HitRateLabel:visible(true)
-		HitRateLabel:text(HitRateLabelPrefix .. HitRateString .. "%")
+		HitLabel:visible(true)
+		HitLabel:text(HitRateLabelPrefix .. HitRateString .. "%")
 	end
+end
 
+function UpdateWSLabel(TargetID, ChartType)
 	if EnableWSDisplay then
+
+		local WSDisplay = GetLabelWS(ChartType)
+		local AttackLog = GetAttackLogForType(ChartType)
+
 		if #AttackLog[TargetID][WEAPON_SKILL_LOG] > 0 then
-		local WSText = ""
+			local WSText = ""
 
-		local IterateStart = 1
-		local IterateEnd = #AttackLog[TargetID][WEAPON_SKILL_LOG]
-		local IterateStep = 1
+			local IterateStart = 1
+			local IterateEnd = #AttackLog[TargetID][WEAPON_SKILL_LOG]
+			local IterateStep = 1
 
-		if ReverseWeaponskills then
-			IterateStart = #AttackLog[TargetID][WEAPON_SKILL_LOG]
-			IterateEnd = 1
-			IterateStep = -1
-		end
-
-		for i=IterateStart, IterateEnd, IterateStep do
-			local WSInfo = AttackLog[TargetID][WEAPON_SKILL_LOG][i]
-			local WSLine = CleanWSName(WSInfo[WS_NAME]) .. " " .. FormatWSDamage(WSInfo[WS_DAMAGE])
-
-			if WSInfo[WS_RESULT] == ATTACK_HEAL then
-				WSLine = ColorWrapForTexts(WSLine, ColorHeal[1], ColorHeal[2], ColorHeal[3])
+			if ReverseWeaponskills then
+				IterateStart = #AttackLog[TargetID][WEAPON_SKILL_LOG]
+				IterateEnd = 1
+				IterateStep = -1
 			end
-			WSText = WSText .. WSLine
 
-			if WSInfo[SC_NAME] then
-				WSText = WSText .. " + "
-				local SCLine = string.sub(WSInfo[SC_NAME], 1, 5) .. " " .. FormatWSDamage(WSInfo[SC_DAMAGE])
-				
-				if WSInfo[SC_RESULT] == ATTACK_HEAL then
-					SCLine = ColorWrapForTexts(SCLine, ColorHeal[1], ColorHeal[2], ColorHeal[3])
+			for i=IterateStart, IterateEnd, IterateStep do
+				local WSInfo = AttackLog[TargetID][WEAPON_SKILL_LOG][i]
+				local WSDamage = FormatWSDamage(WSInfo[WS_DAMAGE])
+
+				if WSInfo[WS_RESULT] == ATTACK_MISS then
+					WSDamage = " MISS"
 				end
-				WSText = WSText .. SCLine
+
+				local WSLine = " " .. CleanWSName(WSInfo[WS_NAME]) .. " " .. WSDamage
+
+				if WSInfo[WS_RESULT] == ATTACK_HEAL then
+					WSLine = ColorWrapForTexts(WSLine, ColorHeal[1], ColorHeal[2], ColorHeal[3])
+				end
+
+				if WSInfo[SC_NAME] then
+					WSLine = WSLine .. " + "
+					local SCLine = string.sub(WSInfo[SC_NAME], 1, 5) .. " " .. FormatWSDamage(WSInfo[SC_DAMAGE])
+					
+					if WSInfo[SC_RESULT] == ATTACK_HEAL then
+						SCLine = ColorWrapForTexts(SCLine, ColorHeal[1], ColorHeal[2], ColorHeal[3])
+					end
+					WSLine = WSLine .. SCLine
+				end
+				
+				WSText = WSText .. WSLine .. " "
+
+				if i ~= IterateEnd then
+					WSText = WSText .. "\n"
+				end
 			end
 
-			if i ~= IterateEnd then
-				WSText = WSText .. " \n"
-			end
-		end
-
-		WeaponskillDisplay:visible(true)
-		WeaponskillDisplay:text(WSText)
-	else
-		WeaponskillDisplay:visible(false)
+			WSDisplay:visible(true)
+			WSDisplay:text(WSText)
+		else
+			WSDisplay:visible(false)
 		end
 	end
 end
 
-function DisplayLabels(Visible)
-	if EnableMaxLabel then
+function DisplayLabels(Visible, ChartType)
+	local MaxLabel = GetLabelMax(ChartType)
+	local HitLabel = GetLabelHit(ChartType)
+	local WSDisplay = GetLabelWS(ChartType)
+
+	if EnableMaxLabel and MaxLabel then
 		MaxLabel:visible(Visible)
 	end
 
-	if EnableHitRate then
-		HitRateLabel:visible(Visible)
+	if EnableHitRate and HitLabel then
+		HitLabel:visible(Visible)
 	end
 
-	if EnableWSDisplay then
-		WeaponskillDisplay:visible(Visible)
+	if EnableWSDisplay and WSDisplay then
+		WSDisplay:visible(Visible)
+	end
+end
+
+function DisplayPetLabels(Visible)
+	DisplayLabels(Visible, TYPE_PET)
+end
+
+function DisplayPlayerLabels(Visible)
+	DisplayLabels(Visible, TYPE_PLAYER)
+end
+
+function DestroyPetLabels()
+	local MaxLabel = GetLabelMax(TYPE_PET)
+	local HitLabel = GetLabelHit(TYPE_PET)
+	local WSDisplay = GetLabelWS(TYPE_PET)
+
+	if MaxLabel then
+		MaxLabel:destroy()
+	end
+
+	if HitLabel then
+		HitLabel:destroy()
+	end
+
+	if WSDisplay then
+		WSDisplay:destroy()
 	end
 end
 
@@ -197,17 +311,42 @@ function GetLabelSettings()
 	return LabelSettings
 end
 
+
+function GetLabelMax(ChartType)
+	if ChartType == TYPE_PLAYER then
+		return PlayerMaxLabel
+	elseif ChartType == TYPE_PET then
+		return PetMaxLabel
+	end
+end
+
+function GetLabelHit(ChartType)
+	if ChartType == TYPE_PLAYER then
+		return PlayerHitLabel
+	elseif ChartType == TYPE_PET then
+		return PetHitLabel
+	end
+end
+
+function GetLabelWS(ChartType)
+	if ChartType == TYPE_PLAYER then
+		return PlayerWSDisplay
+	elseif ChartType == TYPE_PET then
+		return PetWSDisplay
+	end
+end
+
 function CleanWSName(InputString)
 	InputString = string.gsub(InputString, "Blade: ", "")
 	InputString = string.gsub(InputString, "Tachi: ", "")
 	InputString = string.gsub(InputString, "'", "")
 	InputString = string.gsub(InputString, " ", "")
 	InputString = string.sub(InputString, 1, 5)
-	InputString = SetStringWidth(InputString, 5, " ", true)
-	return " " .. InputString
+	InputString = string.format("%5s", InputString)
+	return InputString
 end
 
 function FormatWSDamage(InputDamage)
-	InputDamage = SetStringWidth(InputDamage, 5, " ", true)
+	InputDamage = string.format("%5s", InputDamage)
 	return InputDamage
 end
